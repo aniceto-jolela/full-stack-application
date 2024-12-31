@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import psycopg
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -34,6 +35,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "api.apps.ApiConfig",
+    "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -84,7 +87,31 @@ DATABASES = {
         "PASSWORD": os.environ.get("PASSWORD_DB"),
         "HOST": os.environ.get("HOST"),
         "PORT": os.environ.get("PORT_DB"),
+        "OPTIONS": {
+            "pool": True,
+        }
     }
+}
+
+# Test the connection
+try:
+    with psycopg.connect(
+            dbname=DATABASES["default"]["NAME"],
+            user=DATABASES["default"]["USER"],
+            password=DATABASES["default"]["PASSWORD"],
+            host=DATABASES["default"]["HOST"],
+            port=DATABASES["default"]["PORT"],
+    ) as conn:
+        print("Database Connection!")
+except psycopg.Error as e:
+    print(f"Connection error: {e}")
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10
 }
 
 
