@@ -49,10 +49,14 @@ Task: Build a full-stack application to manage a user directory.
 7. Vite + React (variant TypeScript)
    ```shell
    npm create vite@latest frontend --template react
-   ```  
+   ```
 8. Material UI
    ```shell
    npm install @mui/material @emotion/react @emotion/styled
+   ```
+9. Router
+   ```shell
+   npm install react-router-dom
    ```
 
 
