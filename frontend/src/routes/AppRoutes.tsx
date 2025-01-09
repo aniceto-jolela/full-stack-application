@@ -16,6 +16,7 @@ const AppRoutes = createBrowserRouter([
         errorElement: <ErrorPage />,
         children:[
             {path: "/", element: <Suspense fallback={<div>Loading...</div>}><Home /></Suspense>},
+            {path: "/home", element: <Suspense fallback={<div>Loading...</div>}><Home /></Suspense>},
             {path: "/about", element: <Suspense fallback={<div>Loading...</div>} ><About /></Suspense>},
             {path: "/login", element: <Suspense fallback={<div>Loading...</div>}><Login /></Suspense>},
             {path: "/security", element: <Suspense fallback={<div>Loading...</div>}><Security /></Suspense>},

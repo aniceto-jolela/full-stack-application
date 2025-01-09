@@ -73,9 +73,8 @@ Task: Build a full-stack application to manage a user directory.
 >> djangorestframework 3.15.2 <br/>
 >> markdown-3.7 <br/>
 >> django-filter-24.3 <br/>
->> nvm v22.12.0 <br/>
->> node v22.12.0 <br/>
->> npm 10.9.0 <br/>
+>> node v22.13.0 <br/>
+>> npm 10.9.2 <br/>
 >> react 18.3.1 <br/>
 >> mui 11.14.0 <br/>
 >> vite 6.0.5 <br/>
