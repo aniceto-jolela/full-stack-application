@@ -5,8 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.exceptions import NotFound
+
 
 
 @api_view(["POST"]) # CSRF cookie
@@ -22,68 +27,103 @@ def api_home(request, *args, **kwargs):
     return Response({"invalid":"not good data"}, status=400)
 
 
-@api_view(["POST"]) # CSRF cookie
-@permission_classes([AllowAny])
-def login(request):
-    data = request.data
-    authenticate_user = authenticate(username=data["username"], password=data["password"])
-
-    if authenticate_user is not None:
-        user = User.objects.get(username=data["username"])
-        serializer = UserSerializer(user)
-        response_data = {
-            "user" :  serializer.data
-        }
-
-        token, create_token = Token.objects.get_or_create(user=user)
-        if token:
-            response_data["token"] = token.key
-        elif create_token:
-            response_data["token"] = create_token.key
-        return Response(response_data)
-    return Response({"detail": "User or password not found."}, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["GET"])
+def homeview(request):
+    return Response({"message": "Home view page"})
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
+def login(request):
+    data = request.data
+    user = authenticate(username=data.get("username"), password=data.get("password"))
+
+    if user is None:
+        return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    serializer = UserSerializer(user)
+    tokens = serializer.get_tokens(user)
+    return Response({"user": serializer.data, "tokens": tokens}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def register(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
-
-        user = User.objects.get(username=request.data["username"])
-        token = Token.objects.get(user=user)
-        serializer = UserSerializer(user)
-        data = {
-            "user": serializer.data,
-            "token": token.key
-        }
-        return Response(data, status=status.HTTP_201_CREATED)
+        user = serializer.save()
+        tokens = serializer.get_tokens(user)
+        return Response({"user":serializer.data, "tokens": tokens}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def users(request):
     """
     List all users (requires authentication).
     """
-    users = User.objects.all()
+    users = User.objects.all().order_by("-date_joined")
     serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    user = request.user
+    serializer = UserSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def detail(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise NotFound("User not found")
+        
+    serializer = UserSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["PUT"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def update(request):
     """
     Update the authenticated user's information.
     """
-    user = request.user  # Get the currently authenticated user
-    serializer = UserSerializer(user, data=request.data, partial=True)  # `partial=True` allows updating only some fields
+    user = request.user
+    serializer = UserSerializer(user, data=request.data, partial=True) 
 
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["PUT"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def update_any_user(request, user_id):
+    """
+    Update a user's information by user ID.
+    Only an admin or the user themselves can update their information.
+    """
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise NotFound("User not found.")
+    if request.user != user and not  request.user.is_staff:
+        return Response({"error": "You do not have permission to update this user."}, status=status.HTTP_403_FORBIDDEN)
+    
+    serializer = UserSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
@@ -91,15 +131,8 @@ def update(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def homeview(request):
-    return Response({"message": "Home view page"})
-
-
 @api_view(["DELETE"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def delete(request):
     # Check if confirmation is provided
@@ -116,9 +149,15 @@ def delete(request):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["GET"])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
+@api_view(["POST"])
+@authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
-    request.user.auth_token.delete()
-    return Response({"message": "logout successful"})
+    try:
+        request.user.auth_token.delete()
+        return Response({"message": "Logout successful."}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response({"error": "Unable to logout!"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
