@@ -128,7 +128,7 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
@@ -152,9 +152,15 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React's development server
+    "http://localhost:5173",  # React's development server
 ]
 
+CORS_ALLOW_CREDENTIALS = True #To allow cookies or authentication headers:
+
+CORS_ALLOWED_HEADERS = [
+    "authorization",
+    "content-type",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
