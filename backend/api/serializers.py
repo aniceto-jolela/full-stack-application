@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
+import re
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +16,23 @@ class UserSerializer(serializers.ModelSerializer):
             password = validated_data["password"]
         )
         return user
+    
+    
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
+         # Check for at least one digit
+        if not re.search(r"\d", value):
+            raise serializers.ValidationError("Password must contain at least one digit.")
+        if not re.search(r"[A-Z]", value):
+            raise serializers.ValidationError("Password must contain at least one uppercase letter.")
+        if not re.search(r"[a-z]", value):
+            raise serializers.ValidationError("Password must contain at least one lowercase letter.")
+        # Check for at least one special character
+        if not re.search(r'[!@#$%^&*<>(),.-_~{}|?":]', value):
+            raise serializers.ValidationError("Password must contain at least one special character")
+        return value
+                         
         
     def update(self, instace, validated_data):
         if "username" in validated_data:
@@ -35,6 +53,7 @@ class UserSerializer(serializers.ModelSerializer):
         instace.save()
         return instace
         
+
     def get_tokens(self, user):
         refresh = RefreshToken.for_user(user)
         return {

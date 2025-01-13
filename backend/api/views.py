@@ -38,20 +38,24 @@ def login(request):
     data = request.data
     user = authenticate(username=data.get("username"), password=data.get("password"))
 
-    if request.user.is_staff or request.user.is_superuser:
-        if user is None:
-            return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+    if user is None:
+        return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+    if not user.is_active:
+        return Response({"error": "Your account is inactive."}, status=status.HTTP_403_FORBIDDEN)
+    if user.is_staff or user.is_superuser:        
         serializer = UserSerializer(user)
         tokens = serializer.get_tokens(user)
         return Response({"user": serializer.data, "tokens": tokens}, status=status.HTTP_200_OK)
     else:
         return Response({"error": "You do not have permission to login."}, status=status.HTTP_403_FORBIDDEN)
-
+  
 
 @api_view(["POST"])
 @authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def register(request):
+    if not request.user.is_superuser:
+        return Response({"error": "You do not have permission to register user."}, status=status.HTTP_403_FORBIDDEN)
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -82,6 +86,8 @@ def profile(request):
 @authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def detail(request, user_id):
+    if not request.user.is_superuser:
+        return Response({"error": "You are not allowed to view the user information."}, status=status.HTTP_403_FORBIDDEN)
     try:
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
@@ -92,7 +98,7 @@ def detail(request, user_id):
 
 
 @api_view(["PUT"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def update_user(request):
     """
@@ -107,13 +113,15 @@ def update_user(request):
 
 
 @api_view(["PUT"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def update_any_user(request, user_id):
     """
     Update a user's information by user ID.
     Only an admin or the user themselves can update their information.
     """
+    if not request.user.is_superuser:
+        return Response({"error": "You do not have permission to update user."}, status=status.HTTP_403_FORBIDDEN)
     try:
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
@@ -125,12 +133,11 @@ def update_any_user(request, user_id):
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)        
 
 
 @api_view(["PUT"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_user(request, user_id):
     if not request.user.is_superuser:
@@ -151,11 +158,11 @@ def delete_user(request, user_id):
 
 
 @api_view(["PUT"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def recover_user(request, user_id):
     if not request.user.is_superuser:
-        return Response({"error": "You do not have permission to delete this user."}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"error": "You do not have permission to recover this user."}, status=status.HTTP_403_FORBIDDEN)
     confirm = request.data.get("confirm")
     if confirm != "delete":
         return Response({"error": "Please confirm account deletion by sending {'confirm': 'delete', 'is_active':false, 'is_staff':false, 'is_superuser':false}."}, status=status.HTTP_400_BAD_REQUEST)
@@ -172,7 +179,7 @@ def recover_user(request, user_id):
 
 
 @api_view(["POST"])
-@authentication_classes([JWTAuthentication])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request):
     try:
