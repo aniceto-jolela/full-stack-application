@@ -27,7 +27,7 @@ def api_home(request, *args, **kwargs):
     return Response({"invalid":"not good data"}, status=400)
 
 
-@api_view(["GET"])
+@api_view(["GET"]) # CSRF cookie
 def homeview(request):
     return Response({"message": "Home view page"})
 
@@ -38,12 +38,14 @@ def login(request):
     data = request.data
     user = authenticate(username=data.get("username"), password=data.get("password"))
 
-    if user is None:
-        return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
-    
-    serializer = UserSerializer(user)
-    tokens = serializer.get_tokens(user)
-    return Response({"user": serializer.data, "tokens": tokens}, status=status.HTTP_200_OK)
+    if request.user.is_staff or request.user.is_superuser:
+        if user is None:
+            return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+        serializer = UserSerializer(user)
+        tokens = serializer.get_tokens(user)
+        return Response({"user": serializer.data, "tokens": tokens}, status=status.HTTP_200_OK)
+    else:
+        return Response({"error": "You do not have permission to login."}, status=status.HTTP_403_FORBIDDEN)
 
 
 @api_view(["POST"])
@@ -62,9 +64,6 @@ def register(request):
 @authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def users(request):
-    """
-    List all users (requires authentication).
-    """
     users = User.objects.all().order_by("-date_joined")
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
@@ -95,13 +94,12 @@ def detail(request, user_id):
 @api_view(["PUT"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
-def update(request):
+def update_user(request):
     """
     Update the authenticated user's information.
     """
     user = request.user
     serializer = UserSerializer(user, data=request.data, partial=True) 
-
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
@@ -120,7 +118,7 @@ def update_any_user(request, user_id):
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         raise NotFound("User not found.")
-    if request.user != user and not  request.user.is_staff:
+    if request.user != user and not  request.user.is_superuser:
         return Response({"error": "You do not have permission to update this user."}, status=status.HTTP_403_FORBIDDEN)
     
     serializer = UserSerializer(user, data=request.data, partial=True)
@@ -131,22 +129,46 @@ def update_any_user(request, user_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["DELETE"])
+@api_view(["PUT"])
 @authentication_classes([JWTAuthentication])
 @permission_classes([IsAuthenticated])
-def delete(request):
-    # Check if confirmation is provided
+def delete_user(request, user_id):
+    if not request.user.is_superuser:
+        return Response({"error": "You do not have permission to delete this user."}, status=status.HTTP_403_FORBIDDEN)
     confirm = request.data.get("confirm")
     if confirm != "delete":
-        return Response({"error": "Please confirm account deletion by sending 'confirm': 'delete'."}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Delete the authenticated user
-    user = request.user
+        return Response({"error": "Please confirm account deletion by sending {'confirm': 'delete', 'is_active':false, 'is_staff':false, 'is_superuser':false}."}, status=status.HTTP_400_BAD_REQUEST)
     try:
-        user.delete()
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise NotFound("User not found.")
+    
+    serializer = UserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
         return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["PUT"])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def recover_user(request, user_id):
+    if not request.user.is_superuser:
+        return Response({"error": "You do not have permission to delete this user."}, status=status.HTTP_403_FORBIDDEN)
+    confirm = request.data.get("confirm")
+    if confirm != "delete":
+        return Response({"error": "Please confirm account deletion by sending {'confirm': 'delete', 'is_active':false, 'is_staff':false, 'is_superuser':false}."}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise NotFound("User not found.")
+    
+    serializer = UserSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Successful recovered user."}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])
