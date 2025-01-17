@@ -21,7 +21,7 @@ const Header = () => {
       const DrawerList = (
         <Box sx={{ width: 200,}} role="presentation" onClick={toggleDrawer(false)}>
           <List>
-            {['Home', 'About', 'Profile', 'Security', 'Login'].map((text, index) => {
+            {['Home', 'About', 'Profile', 'Users' ,'Security', 'Login', 'Logout'].map((text, index) => {
               const isActive = location.pathname.toLowerCase() === `/${text.toLowerCase()}`
               return(
               <ListItem key={text} disablePadding>

@@ -99,6 +99,10 @@ Task: Build a full-stack application to manage a user directory.
    ```shell
    pip install django-cors-headers
    ```
+16. axios and jwt-decode
+   ```shell
+   npm install axios jwt-decode
+   ```
 
 
 
