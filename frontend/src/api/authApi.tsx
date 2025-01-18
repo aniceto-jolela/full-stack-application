@@ -8,6 +8,7 @@ type CredentialsProps = {
     password: string
 }
 
+
 export const login = async (credentials:CredentialsProps)=>{
     try{
         const response = await api.post('login/', credentials);
@@ -37,6 +38,16 @@ export const fetchUsers = async () =>{
 
 export const fetchRecoverUser = async () =>{
     const response = await api.get("recover_user/")
+    return response.data
+}
+
+export const fetchCreateUser = async (userData:{username:string; email?:string; password: string}) =>{
+    const response = await api.post("create/", userData)
+    return response.data
+}
+
+export const fetchUpdateUser = async(userData:{username: string; email?: string; password?: string; is_active: boolean; is_staff?: boolean; is_superuser?: boolean}) =>{
+    const response = await api.put("update_user/", userData)
     return response.data
 }
 

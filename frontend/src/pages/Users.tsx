@@ -32,6 +32,7 @@ const Users = () => {
                 {error && <p style={{ color: "red" }}>{error}</p>}
                 {!error && (
                     <>
+                    <Link to={'create'}>Add</Link> | 
                     <Link to={'eliminated'}>Eliminated</Link>
                     <table border={1}>
                         <thead>

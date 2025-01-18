@@ -13,6 +13,7 @@ import Logout from "../features/auth/Logout";
 import AuthRedirect, { AuthRedirectRoot } from "../components/authRedirect";
 import Eliminated from "../pages/Eliminated";
 import Detail from "../pages/Detail";
+import Create from "../pages/Create";
 
 const AppRoutes = createBrowserRouter([
     {
@@ -28,6 +29,7 @@ const AppRoutes = createBrowserRouter([
             {path: "/security", element: (<AuthRedirect><Suspense fallback={<div>Loading...</div>}><Security /></Suspense></AuthRedirect>),},
             {path: "/profile", element: (<AuthRedirect><Suspense fallback={<div>Loading...</div>}><Profile /></Suspense></AuthRedirect>)},
             {path: "/users", element: <AuthRedirect><Suspense fallback={<div>Loading...</div>}><Users /></Suspense></AuthRedirect>},
+            {path: "/users/create", element: <AuthRedirect><Suspense fallback={<div>Loading...</div>}><Create /></Suspense></AuthRedirect>},
             {path: "/users/detail/:id/", element: <AuthRedirect><Suspense fallback={<div>Loading...</div>}><Detail /></Suspense></AuthRedirect>},
             {path: "/users/eliminated", element: <AuthRedirect><Suspense fallback={<div>Loading...</div>}><Eliminated /></Suspense></AuthRedirect>}
         ]
