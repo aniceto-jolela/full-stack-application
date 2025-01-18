@@ -77,13 +77,14 @@ const Header = () => {
             <Drawer open={open} onClose={toggleDrawer(false)} >
                 {DrawerList}
             </Drawer>
-            <Container   sx={{
-              flex: 1,
-                
-                marginTop: (theme) => `calc(${theme.spacing(8)} + 16px)`,
-                padding: 2,
+            <Container sx={{flex: 1,
+                marginTop: (theme) => `calc(${theme.spacing(8)})`,
+                padding: 2, backgroundColor: "pink",
               }}>
+                <Box sx={{backgroundColor: "red"}}>
+
               <Outlet />
+                </Box>
             </Container>
         </Box>
       );

@@ -43,7 +43,7 @@ export const fetchRecoverUser = async (id: number | undefined, userData:{confirm
 
 export const fetchCreateUser = async (userData:{username:string; email?:string; password: string}) =>{
     const response = await api.post("create/", userData)
-    return response.data
+    return response
 }
 
 export const fetchUpdateUser = async(userData:{username: string; email?: string; password?: string; is_active: boolean; is_staff?: boolean; is_superuser?: boolean}) =>{
