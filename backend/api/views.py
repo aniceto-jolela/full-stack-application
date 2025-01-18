@@ -164,7 +164,7 @@ def recover_user(request, user_id):
     if not request.user.is_superuser:
         return Response({"error": "You do not have permission to recover this user."}, status=status.HTTP_403_FORBIDDEN)
     confirm = request.data.get("confirm")
-    if confirm != "delete":
+    if confirm != "recover":
         return Response({"error": "Please confirm account deletion by sending {'confirm': 'delete', 'is_active':false, 'is_staff':false, 'is_superuser':false}."}, status=status.HTTP_400_BAD_REQUEST)
     try:
         user = User.objects.get(pk=user_id)

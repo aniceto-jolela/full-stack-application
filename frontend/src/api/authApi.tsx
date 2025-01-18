@@ -36,8 +36,8 @@ export const fetchUsers = async () =>{
     return response.data
 }
 
-export const fetchRecoverUser = async () =>{
-    const response = await api.get("recover_user/")
+export const fetchRecoverUser = async (id: number | undefined, userData:{confirm: string; is_active: boolean}) =>{
+    const response = await api.put(`recover_user/${id}/`, userData)
     return response.data
 }
 
@@ -51,9 +51,20 @@ export const fetchUpdateUser = async(userData:{username: string; email?: string;
     return response.data
 }
 
+export const fetchUpdateAnyUser = async(id: string | undefined, userData:{username: string; email?: string; password?: string; is_active: boolean; is_staff?: boolean; is_superuser?: boolean}) =>{
+    const response = await api.put(`update_any_user/${id}/update/`, userData)
+    return response.data
+}
+
 export const fetchDetail = async (id: string | undefined) =>{
     const response = await api.get(`detail/${id}/`)
     //if(response.status === 404){return response.status}
+    console.log(response.data)
+    return response.data
+}
+
+export const fetchDeleteUser = async (id: number | undefined, userData:{confirm: string; is_active: boolean; is_staff: boolean; is_superuser: boolean}) =>{
+    const response = await api.put(`delete_user/${id}/`, userData)
     console.log(response.data)
     return response.data
 }

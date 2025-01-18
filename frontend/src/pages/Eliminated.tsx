@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react"
-import { fetchUsers } from "../api/authApi"
-import { Link } from "react-router-dom";
+import { fetchRecoverUser, fetchUsers } from "../api/authApi"
 
 type User = {
     id: number;
@@ -12,6 +11,10 @@ type User = {
 const Eliminated = () => {
   const [users, setUsers] = useState<User[]>([])
        const [error, setError] = useState<string | null>(null)
+       const [userData] = useState({
+       confirm: "recover",
+       is_active: true,
+    })
       
     useEffect(()=>{
         const getUser = async () => {
@@ -24,7 +27,19 @@ const Eliminated = () => {
             }
         }
         getUser()
-    }, [])
+    }, [users])
+
+    const handleRecoverUser = async (id: number | undefined) =>{
+        try {
+            const confirm = window.confirm("Are you sure you want to recover this user?")
+            if(confirm){
+                const data = await fetchRecoverUser(id, userData)
+                console.log("User recover:", data);
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
 
     return (
         <>
@@ -49,7 +64,7 @@ const Eliminated = () => {
                                     <td>{user.id}</td>
                                     <td>{user.username}</td>
                                     <td>{user.is_active ? "Active": "Inative"}</td>
-                                    <td><Link to={`detail/${user.id}/`}>Recover</Link> </td>
+                                    <td><button onClick={()=>handleRecoverUser(user.id)}>Recover</button></td>
                                 </tr>):null}
                             </>))
                         ):(
