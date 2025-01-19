@@ -1,8 +1,18 @@
 import {useState} from "react"
 import { fetchCreateUser } from "../api/authApi"
-import { Box, Stack, TextField } from "@mui/material"
+import { Box, Button, TextField } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid2';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import { deepPurple } from '@mui/material/colors';
+
+import Typography from '@mui/material/Typography';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { Link } from "react-router-dom";
+import Icon from '@mdi/react';
+import { mdiAccountEdit, mdiHomeAccount, mdiAccountMultiple, mdiAccountTie } from '@mdi/js';
 
 type ErrorUser = {
     username?: string,
@@ -12,7 +22,7 @@ type ErrorUser = {
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
     ...theme.typography.body2,
-    padding: theme.spacing(1),
+    padding: theme.spacing(10),
     textAlign: 'center',
     color: theme.palette.text.secondary,
     ...theme.applyStyles('dark', {
@@ -60,62 +70,96 @@ const Create = () => {
       };
 
     return (
-        <>
-            <h2>Create</h2>
-            <Stack sx={{justifyContent: "center", alignItems: "center"}}  spacing={{ xs: 8, sm: 8, md: 8 }} direction="row" >
+        <Box sx={{ flexGrow: 1, }}>
+            <Stack direction="row" spacing={2}>
+                <Avatar  sx={{ width: 25, height: 25 }}>
+                    <Icon path={mdiAccountTie} size={1} title={"Super user"}  />
+                </Avatar>
+                <Avatar sx={{ bgcolor: deepPurple[300], marginTop:"20px" }}>
+                    <Icon path={mdiAccountTie} size={1} title={"Super user"}  />
+                </Avatar>
+                <h2>Create</h2>
+            </Stack><br/>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link
+                    to={"/home"}
+                    style={{display: "flex", alignItems: "center", color: "inherit"}}
+                >
+                    <Icon path={mdiHomeAccount} size={1} title={"Home"} style={{padding:"3px"}} />
+                    Home
+                </Link>
+                <Link
+                style={{ display: 'flex', alignItems: 'center', color: "inherit" }}
+                to={"/Users"}
+                >
+                    <Icon path={mdiAccountMultiple} size={1} title={"Users"} style={{padding:"3px"}}  />
+                    Users
+                </Link>
+                <Typography
+                sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}
+                >
+                    <Icon path={mdiAccountEdit} size={1} title={"Create User"} style={{padding:"3px"}} />
+                Create user
+                </Typography>
+            </Breadcrumbs>
             <form onSubmit={handleSubmit}>
                 <Item>
-                <TextField
-                    required
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    id="outlined-required"
-                    label="Username"
-                    defaultValue="Username"
-                    size="small"
-                />
-                {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
+                    <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 8, md: 8 }} >
+                        <Grid  size={12} >
+                            <TextField
+                                required
+                                type="text"
+                                name="username"
+                                color="secondary" 
+                                value={formData.username}
+                                onChange={handleChange}
+                                id="outlined-required"
+                                label="Username"
+                                defaultValue="Username"
+                                size="small"
+                                error={errorUsername?.username ? true : false}
+                            />
+                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
+                        </Grid>
+                        <Grid size={{ xs: 12,  sm: 12, md: 12 }}>
+                            <TextField
+                                type="email"
+                                name="email"
+                                color="secondary" 
+                                value={formData.email}
+                                onChange={handleChange}
+                                id="outlined-basic"
+                                label="Email"
+                                defaultValue="Email"
+                                size="small"
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 12, md: 12 }}>
+                            <TextField
+                                required
+                                id="outlined-password-input"
+                                label="Password"
+                                type="password"
+                                name="password"
+                                color="secondary" 
+                                value={formData.password}
+                                onChange={handleChange}
+                                autoComplete="current-password"
+                                size="small"
+                                error={errorUsername?.password ? true : false}
+                            />
+                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
+                        </Grid>
+                        <Grid size={{ xs: 12, sm: 12, md:12 }}>
+                            <Button type="submit" variant="outlined" size="small" color="secondary">Submit</Button>
+                        </Grid>
+                    </Grid>
                 </Item>
-            <br />
-            <Item>
-                <TextField
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    id="outlined-basic"
-                    label="Email"
-                    defaultValue="Email"
-                    size="small"
-                />
-            </Item>
-
-            <br />
-            <Item>
-                <TextField
-                    required
-                    id="outlined-password-input"
-                    label="Password"
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    autoComplete="current-password"
-                    size="small"
-                />
-                
-                {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
-            </Item>
-            <br />
-            <button type="submit">Submit</button>
             </form>
            
             {error && <p style={{ color: "red" }}>{error}</p>}
             {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-            </Stack>
-        </>
+        </Box>
     )
 }
 

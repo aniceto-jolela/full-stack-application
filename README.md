@@ -103,6 +103,10 @@ Task: Build a full-stack application to manage a user directory.
    ```shell
    npm install axios jwt-decode
    ```
+17. pictogrammers - Icon
+   ```shell
+   npm install @mdi/react @mdi/js
+   ```
 
 
 

@@ -28,7 +28,7 @@ const Header = () => {
                 <ListItemButton 
                 sx={{
                   backgroundColor: isActive? 
-                  'hsl(210, 100%, 96%)': 'inherit', 
+                  'hsl(273, 100.00%, 96.10%)': 'inherit', 
                   '&:hover':{backgroundColor: 'lightgray'},
                   paddingLeft: isActive? 4: 'auto',
                   marginRight: -2,
@@ -43,7 +43,7 @@ const Header = () => {
                       marginTop: -15,
                       width: '100%',
                       
-                      color: isActive ? 'hsl(210, 100%, 42%)' : 'black',
+                      color: isActive ? 'hsl(281, 100.00%, 42.00%)' : 'black',
                     }}
                     >{text}</Link>
                 </ListItemButton>
@@ -78,13 +78,10 @@ const Header = () => {
                 {DrawerList}
             </Drawer>
             <Container sx={{flex: 1,
-                marginTop: (theme) => `calc(${theme.spacing(8)})`,
-                padding: 2, backgroundColor: "pink",
+                marginTop: (theme) => `calc(${theme.spacing(11)})`,
+                padding: 2, 
               }}>
-                <Box sx={{backgroundColor: "red"}}>
-
               <Outlet />
-                </Box>
             </Container>
         </Box>
       );
