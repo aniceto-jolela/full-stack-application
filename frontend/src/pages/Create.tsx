@@ -1,6 +1,6 @@
 import {useState} from "react"
 import { fetchCreateUser } from "../api/authApi"
-import { Box, Button, TextField } from "@mui/material"
+import { Box, Button, Grid2, TextField } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
@@ -104,8 +104,8 @@ const Create = () => {
             </Breadcrumbs>
             <form onSubmit={handleSubmit}>
                 <Item>
-                    <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 8, md: 8 }} >
-                        <Grid  size={12} >
+                    <Grid2 container rowSpacing={2} columnSpacing={{ xs: 1, sm: 8, md: 8 }} >
+                        <Grid2  size={12} >
                             <TextField
                                 required
                                 type="text"
@@ -120,8 +120,8 @@ const Create = () => {
                                 error={errorUsername?.username ? true : false}
                             />
                             {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
-                        </Grid>
-                        <Grid size={{ xs: 12,  sm: 12, md: 12 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 12,  sm: 12, md: 12 }}>
                             <TextField
                                 type="email"
                                 name="email"
@@ -133,8 +133,8 @@ const Create = () => {
                                 defaultValue="Email"
                                 size="small"
                             />
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 12, md: 12 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 12, sm: 12, md: 12 }}>
                             <TextField
                                 required
                                 id="outlined-password-input"
@@ -149,11 +149,11 @@ const Create = () => {
                                 error={errorUsername?.password ? true : false}
                             />
                             {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
-                        </Grid>
-                        <Grid size={{ xs: 12, sm: 12, md:12 }}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 12, sm: 12, md:12 }}>
                             <Button type="submit" variant="outlined" size="small" color="secondary">Submit</Button>
-                        </Grid>
-                    </Grid>
+                        </Grid2>
+                    </Grid2>
                 </Item>
             </form>
            
