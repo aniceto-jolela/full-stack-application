@@ -3,7 +3,6 @@ import { fetchCreateUser } from "../api/authApi"
 import { Box, Button, Grid2, TextField } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import Grid from '@mui/material/Grid2';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { deepPurple } from '@mui/material/colors';
@@ -102,61 +101,73 @@ const Create = () => {
                 Create user
                 </Typography>
             </Breadcrumbs>
+            <Grid2 container rowSpacing={2} columnSpacing={{ xs: 3, sm: 2, md: 2 }}  >
+            <Grid2  size={{ xs: 12, sm: 12, md: 12 }} >
             <form onSubmit={handleSubmit}>
                 <Item>
-                    <Grid2 container rowSpacing={2} columnSpacing={{ xs: 1, sm: 8, md: 8 }} >
-                        <Grid2  size={12} >
-                            <TextField
-                                required
-                                type="text"
-                                name="username"
-                                color="secondary" 
-                                value={formData.username}
-                                onChange={handleChange}
-                                id="outlined-required"
-                                label="Username"
-                                defaultValue="Username"
-                                size="small"
-                                error={errorUsername?.username ? true : false}
-                            />
-                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
-                        </Grid2>
-                        <Grid2 size={{ xs: 12,  sm: 12, md: 12 }}>
-                            <TextField
-                                type="email"
-                                name="email"
-                                color="secondary" 
-                                value={formData.email}
-                                onChange={handleChange}
-                                id="outlined-basic"
-                                label="Email"
-                                defaultValue="Email"
-                                size="small"
-                            />
-                        </Grid2>
-                        <Grid2 size={{ xs: 12, sm: 12, md: 12 }}>
-                            <TextField
-                                required
-                                id="outlined-password-input"
-                                label="Password"
-                                type="password"
-                                name="password"
-                                color="secondary" 
-                                value={formData.password}
-                                onChange={handleChange}
-                                autoComplete="current-password"
-                                size="small"
-                                error={errorUsername?.password ? true : false}
-                            />
-                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
-                        </Grid2>
-                        <Grid2 size={{ xs: 12, sm: 12, md:12 }}>
-                            <Button type="submit" variant="outlined" size="small" color="secondary">Submit</Button>
-                        </Grid2>
-                    </Grid2>
+                        <TextField
+                            required
+                            type="text"
+                            name="username"
+                            color="secondary" 
+                            value={formData.username}
+                            onChange={handleChange}
+                            id="outlined-required"
+                            label="Username"
+                            defaultValue="Username"
+                            size="small"
+                            error={errorUsername?.username ? true : false}
+                        />
+                        {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
+                        <br/><br/>
+                        <TextField
+                            type="email"
+                            name="email"
+                            color="secondary" 
+                            value={formData.email}
+                            onChange={handleChange}
+                            id="outlined-basic"
+                            label="Email"
+                            defaultValue="Email"
+                            size="small"
+                        />
+                        <br/><br/>
+                        <TextField
+                            required
+                            id="outlined-password-input"
+                            label="Password"
+                            type="password"
+                            name="password"
+                            color="secondary" 
+                            value={formData.password}
+                            onChange={handleChange}
+                            autoComplete="current-password"
+                            size="small"
+                            error={errorUsername?.password ? true : false}
+                        />
+                        {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
+                        <br/><br/>
+                        <Typography sx={{marginLeft: 7, marginBottom:-2}} variant="subtitle2"  >
+                            * Password must be at least 8 characters long.
+                        </Typography>
+                        <Typography sx={{marginLeft: 4, marginBottom:-2}} variant="subtitle2" ><br/>
+                            * Password must contain at least one digit.
+                        </Typography>
+                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
+                            * Password must contain at least one uppercase letter.
+                        </Typography>
+                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
+                            * Password must contain at least one lowercase letter.
+                        </Typography>
+                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
+                            * Password must contain at least one special character.
+                        </Typography>
+                        <br/><br/>
+                        <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
                 </Item>
             </form>
-           
+            </Grid2>
+            </Grid2>
             {error && <p style={{ color: "red" }}>{error}</p>}
             {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
         </Box>
