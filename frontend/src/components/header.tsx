@@ -42,7 +42,6 @@ const Header = () => {
                       paddingTop: 15,
                       marginTop: -15,
                       width: '100%',
-                      
                       color: isActive ? 'hsl(281, 100.00%, 42.00%)' : 'black',
                     }}
                     >{text}</Link>
@@ -63,6 +62,7 @@ const Header = () => {
               top: 0,
               left: 0,
               right: 0,
+              zIndex: 20,
               }} >
                 <IconButton
                     color="inherit"
@@ -77,12 +77,12 @@ const Header = () => {
             <Drawer open={open} onClose={toggleDrawer(false)} >
                 {DrawerList}
             </Drawer>
-            <Container sx={{flex: 1,
+            <Box sx={{flex: 1,
                 marginTop: (theme) => `calc(${theme.spacing(11)})`,
                 padding: 2, 
               }}>
               <Outlet />
-            </Container>
+            </Box>
         </Box>
       );
 
