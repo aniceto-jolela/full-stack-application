@@ -1,7 +1,6 @@
 import {useEffect, useState} from "react"
 import { fetchProfile, fetchUpdateUser } from "../api/authApi"
-
-import { Box, Button, Grid2, TextField } from "@mui/material"
+import { Alert, AlertTitle, Button, Grid2, TextField } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
@@ -9,12 +8,13 @@ import Stack from '@mui/material/Stack';
 import { deepPurple } from '@mui/material/colors';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import Icon from '@mdi/react';
 import { mdiCardAccountDetails, mdiHomeAccount, mdiAccountDetails, mdiAccountTie } from '@mdi/js';
+import { useSnackbar } from 'notistack';
+import { PasswordTooltip } from "../components/PasswordTooltip";
 
 
 
@@ -45,8 +45,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Profile = () => {
     const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-     const [errorUsername, setErrorUsername] = useState<ErrorUser>();
+    const [errorUsername, setErrorUsername] = useState<ErrorUser>();
+    const { enqueueSnackbar } = useSnackbar();
     const [formData, setFormData] = useState<UserProps>({
         username: "",
         email: "",
@@ -66,18 +66,21 @@ const Profile = () => {
     const handleSubmit = async (e: React.FormEvent) =>{
         e.preventDefault();
         setError("");
-        setSuccessMessage("");
 
         try {
-            const updateUser = await fetchUpdateUser(formData);
-            setSuccessMessage("User update successfully!");
-            console.log("Update User:", updateUser);
-            
-        } catch (error) {
-            setError("Failed to update user. Please try again.");
-            console.error(error);
+            await fetchUpdateUser(formData);
+            setErrorUsername({username:"", password:""})
+            enqueueSnackbar('User update successfully!', { variant: 'success' });
+        } catch (error: any) {
+            enqueueSnackbar('Failed to update user. Please try again.', { variant: 'error' });
+            setErrorUsername({username:"", password:""})
+            if (error.response?.data?.username){
+                setErrorUsername((prev)=>({...prev, username: error.response.data.username[0]}))
+            }
+            if(error.response?.data?.password){
+                setErrorUsername((prev)=>({...prev, password: error.response.data.password[0]}))
+            }
         }
-
     }
 
     useEffect(()=>{
@@ -87,7 +90,6 @@ const Profile = () => {
                 setFormData(data)
             }catch(error){
                 setError("Failed to load profile. Please try again.")
-                console.error(error)
             }
         }
         getMessage()
@@ -163,12 +165,10 @@ const Profile = () => {
                                 onChange={handleChange}
                                 id="outlined-required"
                                 label="Username"
-                                defaultValue="Username"
                                 size="small"
                                 error={errorUsername?.username ? true : false}
                             />
-                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
-                            <br/><br/>
+                            {errorUsername ? <p style={{ color: "red" }}>{errorUsername.username}</p>: <p></p>}
                             <TextField
                                 type="email"
                                 name="email"
@@ -177,29 +177,25 @@ const Profile = () => {
                                 onChange={handleChange}
                                 id="outlined-basic"
                                 label="Email"
-                                defaultValue="Email"
                                 size="small"
                             /><br/><br/>
                             <TextField
-                                required
                                 id="outlined-password-input"
                                 label="Password"
                                 type="password"
                                 name="password"
                                 color="secondary" 
-                                value={formData.password}
                                 onChange={handleChange}
                                 autoComplete="current-password"
                                 size="small"
                                 error={errorUsername?.password ? true : false}
-                            />
-                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
-                            <br/><br/>
-                                <FormControlLabel sx={{marginLeft: -1}}  control={<Checkbox checked={formData.is_active} onChange={handleChange} name="is_active" color="secondary" />} label=": Is_Active" />
-                               
-                                <FormControlLabel   control={<Checkbox checked={formData.is_staff} onChange={handleChange} name="is_staff" color="secondary"/>} label=": Is_Staff" />
-                                <br/>
-                                <FormControlLabel sx={{marginLeft: -10}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
+                            /><br/>
+                            <PasswordTooltip/>
+                            {errorUsername ? <p style={{ color: "red" }}>{errorUsername.password}</p>:<p></p>}
+                            <FormControlLabel sx={{marginLeft: -1}}  control={<Checkbox checked={formData.is_active} required onChange={handleChange} name="is_active" color="secondary" />} label=": Is_Active" />
+                            <FormControlLabel   control={<Checkbox checked={formData.is_staff} onChange={handleChange} name="is_staff" color="secondary"/>} label=": Is_Staff" />
+                            <br/>
+                            <FormControlLabel sx={{marginLeft: -12}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
                             <br/><br/>
                             <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
                         
@@ -207,8 +203,7 @@ const Profile = () => {
                         </form>
                     </Grid2>
                 </Grid2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
         </>
     )
 }
