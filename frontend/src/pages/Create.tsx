@@ -27,13 +27,13 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const Create = () => {
+    const [errorUsername, setErrorUsername] = useState<ErrorUser>();
+    const { enqueueSnackbar } = useSnackbar();
     const [formData, setFormData] = useState({
         username: "",
         email: "",
         password: "",
       });
-    const [errorUsername, setErrorUsername] = useState<ErrorUser>();
-    const { enqueueSnackbar } = useSnackbar();
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -47,7 +47,6 @@ const Create = () => {
           const newUser = await fetchCreateUser(formData);
           setErrorUsername({username:"", password:""})
           setFormData({username:"", email:"", password:""})
-          //  variant could be success, error, warning, info, or default
           enqueueSnackbar(`( ${newUser.data.user.username} ), created successfully!`, { variant: 'success' });
         } catch (err: any) {
           enqueueSnackbar('Failed to create user. Please try again.', { variant: 'error' });
