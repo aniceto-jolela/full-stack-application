@@ -1,40 +1,15 @@
 import {useEffect, useState} from "react"
+import { useParams, Link } from "react-router-dom"
 import { fetchDetail, fetchUpdateAnyUser } from "../api/authApi"
-import { useParams } from "react-router-dom"
-
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
+import { Grid2, Alert, AlertTitle, Paper, FormControlLabel, Stack, TextField, Button, Checkbox, styled, Breadcrumbs, Avatar, Typography } from "@mui/material";
 import { deepPurple } from '@mui/material/colors';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import { Link } from "react-router-dom";
+import { useSnackbar } from 'notistack';
 import Icon from '@mdi/react';
 import { mdiAccountEditOutline, mdiHomeAccount, mdiAccountMultiple, mdiAccountTie } from '@mdi/js';
-import { Grid2, TextField, Button } from "@mui/material";
+import { PasswordTooltip } from "../components/PasswordTooltip";
+import { ErrorUser, RouteParams } from "../types/types";
 
 
-
-type UserProps={
-    username: string,
-    email?: string,
-    password?: string,
-    is_active: boolean,
-    is_staff?: boolean,
-    is_superuser?: boolean, 
-}
-type RouteParams = {
-    id: string
-}
-
-type ErrorUser = {
-    username?: string,
-    password?: string
-}
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
@@ -47,15 +22,17 @@ const Item = styled(Paper)(({ theme }) => ({
     }),
   }));
 
+
 const UpdateAnyUser = () => {
     const [error, setError] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
     const [errorUsername, setErrorUsername] = useState<ErrorUser>();
+    const { enqueueSnackbar } = useSnackbar();
     const {id} = useParams<RouteParams>();
 
-    const [formData, setFormData] = useState<UserProps>({
+    const [formData, setFormData] = useState({
         username: "",
         email: "",
+        password: "",
         is_active: true,
         is_staff: false,
         is_superuser: false
@@ -68,22 +45,28 @@ const UpdateAnyUser = () => {
             [name]: type === "checkbox"? checked: value,
         }))
     }
+
     const handleSubmit = async (e: React.FormEvent) =>{
         e.preventDefault();
         setError("");
-        setSuccessMessage("");
 
         try {
             const updateUser = await fetchUpdateAnyUser(id, formData);
-            setSuccessMessage("User update successfully!");
-            console.log("Update User:", updateUser);
+            setErrorUsername({username:"", password:""})
+            enqueueSnackbar(`( ${updateUser.user.username} ), update successfully!`, { variant: 'success' });
             
-        } catch (error) {
-            setError("Failed to update user. Please try again.");
-            console.error(error);
+        } catch (error: any) {
+            enqueueSnackbar('Failed to update user. Please try again.', { variant: 'error' });
+            setErrorUsername({username:"", password:""})
+            if (error.response?.data?.username){
+                setErrorUsername((prev)=>({...prev, username: error.response.data.username[0]}))
+            }
+            if(error.response?.data?.password){
+                setErrorUsername((prev)=>({...prev, password: error.response.data.password[0]}))
+            }
         }
-
     }
+
 
     useEffect(()=>{
         const getMessage = async () => {
@@ -92,7 +75,6 @@ const UpdateAnyUser = () => {
                 setFormData(data)
             }catch(error){
                 setError("Failed to load profile. Please try again.")
-                console.error(error)
             }
         }
         getMessage()
@@ -100,8 +82,7 @@ const UpdateAnyUser = () => {
 
     return (
         <>
-
-<Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"User"}  />
                 </Avatar>
@@ -147,12 +128,10 @@ const UpdateAnyUser = () => {
                                 onChange={handleChange}
                                 id="outlined-required"
                                 label="Username"
-                                defaultValue="Username"
                                 size="small"
                                 error={errorUsername?.username ? true : false}
                             />
-                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
-                            <br/><br/>
+                            {errorUsername ? <p style={{ color: "red" }}>{errorUsername.username}</p>: <p></p>}
                             <TextField
                                 type="email"
                                 name="email"
@@ -161,29 +140,26 @@ const UpdateAnyUser = () => {
                                 onChange={handleChange}
                                 id="outlined-basic"
                                 label="Email"
-                                defaultValue="Email"
                                 size="small"
-                            /><br/><br/>
+                            />
+                            <br/><br/>
                             <TextField
-                                required
                                 id="outlined-password-input"
                                 label="Password"
                                 type="password"
                                 name="password"
                                 color="secondary" 
-                                value={formData.password}
                                 onChange={handleChange}
                                 autoComplete="current-password"
                                 size="small"
                                 error={errorUsername?.password ? true : false}
-                            />
-                            {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
-                            <br/><br/>
-                                <FormControlLabel sx={{marginLeft: -1}}  control={<Checkbox checked={formData.is_active} onChange={handleChange} name="is_active" color="secondary" />} label=": Is_Active" />
-                               
+                            /><br/>
+                            <PasswordTooltip />
+                            {errorUsername ? <p style={{ color: "red" }}>{errorUsername.password}</p>:<p></p>}
+                                <FormControlLabel sx={{marginLeft: -1}}  control={<Checkbox checked={formData.is_active} required onChange={handleChange} name="is_active" color="secondary" />} label=": Is_Active" />
                                 <FormControlLabel   control={<Checkbox checked={formData.is_staff} onChange={handleChange} name="is_staff" color="secondary"/>} label=": Is_Staff" />
                                 <br/>
-                                <FormControlLabel sx={{marginLeft: -10}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
+                                <FormControlLabel sx={{marginLeft: -12}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
                             <br/><br/>
                             <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
                         
@@ -191,8 +167,7 @@ const UpdateAnyUser = () => {
                         </form>
                     </Grid2>
             </Grid2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
+            {error && <p><Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert></p>}
         </>
     )
 }

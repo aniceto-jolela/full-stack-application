@@ -104,7 +104,7 @@ const Login: React.FC = () => {
                         <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
                             * Password must contain at least one lowercase letter.
                         </Typography>
-                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
+                        <Typography sx={{marginLeft: 15, marginBottom:-2}} variant="subtitle2" ><br/>
                             * Password must contain at least one special character.
                         </Typography>
                         <br/><br/>

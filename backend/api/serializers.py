@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
         if not re.search(r"[a-z]", value):
             raise serializers.ValidationError("Password must contain at least one lowercase letter.")
         # Check for at least one special character
-        if not re.search(r'[!@#$%^&*<>(),.-_~{}|?":]', value):
+        if not re.search(r'[!@=;«»+ºª#$%^&*<>(),._~{}|?":]', value):
             raise serializers.ValidationError("Password must contain at least one special character")
         return value
                          

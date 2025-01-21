@@ -1,17 +1,13 @@
 import {useState} from "react"
-import { fetchCreateUser } from "../api/authApi"
-import { Box, Button, Grid2, TextField } from "@mui/material"
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
-import { deepPurple } from '@mui/material/colors';
-
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import Icon from '@mdi/react';
+import { fetchCreateUser } from "../api/authApi"
+import { Button, Grid2, TextField, Paper, styled, Avatar, Stack, Typography, Breadcrumbs } from "@mui/material"
+import { deepPurple } from '@mui/material/colors';
 import { mdiAccountEdit, mdiHomeAccount, mdiAccountMultiple, mdiAccountTie } from '@mdi/js';
+import { useSnackbar } from 'notistack';
+import { PasswordTooltip } from "../components/PasswordTooltip";
+
 
 type ErrorUser = {
     username?: string,
@@ -29,16 +25,16 @@ const Item = styled(Paper)(({ theme }) => ({
     }),
   }));
 
+
 const Create = () => {
     const [formData, setFormData] = useState({
         username: "",
         email: "",
         password: "",
       });
-    const [error, setError] = useState("");
     const [errorUsername, setErrorUsername] = useState<ErrorUser>();
-    const [successMessage, setSuccessMessage] = useState("");
-
+    const { enqueueSnackbar } = useSnackbar();
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -46,16 +42,15 @@ const Create = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
-        setSuccessMessage("");
     
         try {
           const newUser = await fetchCreateUser(formData);
-          setSuccessMessage("User created successfully!");
-          console.log("Created User:", newUser);
+          setErrorUsername({username:"", password:""})
+          setFormData({username:"", email:"", password:""})
+          //  variant could be success, error, warning, info, or default
+          enqueueSnackbar(`( ${newUser.data.user.username} ), created successfully!`, { variant: 'success' });
         } catch (err: any) {
-          setError("Failed to create user. Please try again.");
-          
+          enqueueSnackbar('Failed to create user. Please try again.', { variant: 'error' });
           setErrorUsername({username:"", password:""})
           if (err.response?.data?.username){
               setErrorUsername((prev)=>({...prev, username: err.response.data.username[0]}))
@@ -63,13 +58,11 @@ const Create = () => {
           if(err.response?.data?.password){
               setErrorUsername((prev)=>({...prev, password: err.response.data.password[0]}))
           }
-          console.log("Have =>", err.response)   
-          console.log(err);
         }
       };
 
     return (
-        <Box sx={{ flexGrow: 1, }}>
+        <>
             <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"Super user"}  />
@@ -97,80 +90,58 @@ const Create = () => {
                 <Typography
                 sx={{ color: 'text.primary', display: 'flex', alignItems: 'center' }}
                 >
-                    <Icon path={mdiAccountEdit} size={1} title={"Create User"} style={{padding:"3px"}} />
-                Create user
+                    <Icon path={mdiAccountEdit} size={1} title={"Create User"} spin style={{padding:"3px"}} />
                 </Typography>
             </Breadcrumbs>
             <Grid2 container rowSpacing={2} columnSpacing={{ xs: 3, sm: 2, md: 2 }}  >
             <Grid2  size={{ xs: 12, sm: 12, md: 12 }} >
             <form onSubmit={handleSubmit}>
                 <Item>
-                        <TextField
-                            required
-                            type="text"
-                            name="username"
-                            color="secondary" 
-                            value={formData.username}
-                            onChange={handleChange}
-                            id="outlined-required"
-                            label="Username"
-                            defaultValue="Username"
-                            size="small"
-                            error={errorUsername?.username ? true : false}
-                        />
-                        {errorUsername && <p style={{ color: "red" }}>{errorUsername.username}</p>}
-                        <br/><br/>
-                        <TextField
-                            type="email"
-                            name="email"
-                            color="secondary" 
-                            value={formData.email}
-                            onChange={handleChange}
-                            id="outlined-basic"
-                            label="Email"
-                            defaultValue="Email"
-                            size="small"
-                        />
-                        <br/><br/>
-                        <TextField
-                            required
-                            id="outlined-password-input"
-                            label="Password"
-                            type="password"
-                            name="password"
-                            color="secondary" 
-                            value={formData.password}
-                            onChange={handleChange}
-                            autoComplete="current-password"
-                            size="small"
-                            error={errorUsername?.password ? true : false}
-                        />
-                        {errorUsername && <p style={{ color: "red" }}>{errorUsername.password}</p>}
-                        <br/><br/>
-                        <Typography sx={{marginLeft: 7, marginBottom:-2}} variant="subtitle2"  >
-                            * Password must be at least 8 characters long.
-                        </Typography>
-                        <Typography sx={{marginLeft: 4, marginBottom:-2}} variant="subtitle2" ><br/>
-                            * Password must contain at least one digit.
-                        </Typography>
-                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
-                            * Password must contain at least one uppercase letter.
-                        </Typography>
-                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
-                            * Password must contain at least one lowercase letter.
-                        </Typography>
-                        <Typography sx={{marginLeft: 14, marginBottom:-2}} variant="subtitle2" ><br/>
-                            * Password must contain at least one special character.
-                        </Typography>
-                        <br/><br/>
-                        <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
+                    <TextField
+                        required
+                        type="text"
+                        name="username"
+                        color="secondary" 
+                        value={formData.username}
+                        onChange={handleChange}
+                        id="outlined-required"
+                        label="Username"
+                        size="small"
+                        error={errorUsername?.username ? true : false}
+                    />
+                    {errorUsername ? <p style={{ color: "red" }}>{errorUsername.username}</p>: <p></p>}
+                    <TextField
+                        type="email"
+                        name="email"
+                        color="secondary" 
+                        value={formData.email}
+                        onChange={handleChange}
+                        id="outlined-basic"
+                        label="Email"
+                        size="small"
+                    />
+                    <br/><br/>
+                    <TextField
+                        required
+                        id="outlined-password-input"
+                        label="Password"
+                        type="password"
+                        name="password"
+                        color="secondary" 
+                        value={formData.password}
+                        onChange={handleChange}
+                        autoComplete="current-password"
+                        size="small"
+                        error={errorUsername?.password ? true : false}
+                    /><br/>
+                    <PasswordTooltip />
+                    {errorUsername ? <p style={{ color: "red" }}>{errorUsername.password}</p>:<p></p>}
+                    <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
                 </Item>
             </form>
             </Grid2>
             </Grid2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {successMessage && <p style={{ color: "green" }}>{successMessage}</p>}
-        </Box>
+        </>
     )
 }
 
