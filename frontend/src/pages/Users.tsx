@@ -89,8 +89,6 @@ const Users = () => {
                 const data = await fetchUsers()
                 setUsers(data)
             }catch(error){
-                console.error(error)
-                enqueueSnackbar('Failed to fetch users. Please try again.', { variant: 'error' });
                 setError("Failed to fetch users. Please try again.");
             }
         }

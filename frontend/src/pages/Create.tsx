@@ -1,12 +1,13 @@
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import { Link } from "react-router-dom";
 import Icon from '@mdi/react';
-import { fetchCreateUser } from "../api/authApi"
-import { Button, Grid2, TextField, Paper, styled, Avatar, Stack, Typography, Breadcrumbs } from "@mui/material"
+import { fetchCreateUser, fetchProfile } from "../api/authApi"
+import { Button, Grid2, TextField, Paper, styled, Avatar, Stack, Typography, Breadcrumbs, Alert, AlertTitle } from "@mui/material"
 import { deepPurple } from '@mui/material/colors';
 import { mdiAccountEdit, mdiHomeAccount, mdiAccountMultiple, mdiAccountTie } from '@mdi/js';
 import { useSnackbar } from 'notistack';
 import { PasswordTooltip } from "../components/PasswordTooltip";
+import { UserProps } from "../types/types";
 
 
 type ErrorUser = {
@@ -29,6 +30,8 @@ const Item = styled(Paper)(({ theme }) => ({
 const Create = () => {
     const [errorUsername, setErrorUsername] = useState<ErrorUser>();
     const { enqueueSnackbar } = useSnackbar();
+    const [status, setStatus] = useState<UserProps>()
+    const [error, setError] = useState<string | null>(null)
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -59,9 +62,23 @@ const Create = () => {
           }
         }
       };
-
+    useEffect(()=>{
+        const getMessage = async () => {
+            try{
+                const data = await fetchProfile()
+                setStatus(data)
+            }catch(error){
+                setError("Failed to load profile. Please try again.")
+            }
+        }
+        getMessage()
+    }, [])
+    
     return (
         <>
+            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+            {!error && (<>
+            {status?.is_superuser?<>
             <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"Super user"}  />
@@ -140,6 +157,8 @@ const Create = () => {
             </form>
             </Grid2>
             </Grid2>
+            </>:<Alert severity="warning"><AlertTitle>Warning</AlertTitle>You do not have permission to register user.</Alert>}
+            </>)}
         </>
     )
 }

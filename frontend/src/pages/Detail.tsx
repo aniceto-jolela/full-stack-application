@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react"
 import { fetchDetail } from "../api/authApi"
 import { useParams } from "react-router-dom"
-import { Grid2 } from "@mui/material"
+import { Grid2, Alert, AlertTitle, } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
@@ -49,9 +49,8 @@ const Detail = () => {
             try{
                 const data = await fetchDetail(id)
                 setUser(data)
-            }catch(error){
-                setError("Failed to load profile. Please try again.")
-                console.error(error)
+            }catch(error: any){
+                setError(error?.response?.data?.error)
             }
         }
         getUser()
@@ -59,6 +58,8 @@ const Detail = () => {
 
     return (
         <>
+            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+            {!error && <>
             <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"Super user"}  />
@@ -122,7 +123,7 @@ const Detail = () => {
                         </Item>
                     </Grid2>
                 </Grid2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            </>}
         </>
     )
 }

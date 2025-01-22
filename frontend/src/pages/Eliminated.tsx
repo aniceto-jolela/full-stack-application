@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {useEffect, useState} from "react"
 import { styled } from '@mui/material/styles';
-import { fetchRecoverUser, fetchUsers } from "../api/authApi"
+import { fetchProfile, fetchRecoverUser, fetchUsers } from "../api/authApi"
 import { Alert, AlertTitle, Button, Grid2 } from "@mui/material";
 import Stack from '@mui/material/Stack';
 import { deepPurple } from '@mui/material/colors';
@@ -22,7 +22,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useSnackbar } from 'notistack';
-import { UserIsActive } from "../types/types";
+import { UserIsActive, UserProps } from "../types/types";
 
 
 
@@ -40,14 +40,15 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Eliminated = () => {
     const [users, setUsers] = useState<UserIsActive[]>([])
-       const [error, setError] = useState<string | null>(null)
-       const { enqueueSnackbar } = useSnackbar();
-       const [open, setOpen] = useState(false);
-       const [userDialog, setUserDaialog] = useState<UserIsActive>()
-       const [userData] = useState({
+    const [error, setError] = useState<string | null>(null)
+    const { enqueueSnackbar } = useSnackbar();
+    const [open, setOpen] = useState(false);
+    const [userDialog, setUserDaialog] = useState<UserIsActive>()
+    const [userData] = useState({
        confirm: "recover",
        is_active: true,
     })
+    const [status, setStatus] = useState<UserProps>()
       
     useEffect(()=>{
         const getUser = async () => {
@@ -55,9 +56,7 @@ const Eliminated = () => {
                 const data = await fetchUsers()
                 setUsers(data)
             }catch(error){
-                console.error(error)
                 setError("Failed to fetch users. Please try again.");
-                enqueueSnackbar('Failed to fetch users. Please try again.', { variant: 'error' });
             }
         }
         getUser()
@@ -81,13 +80,25 @@ const Eliminated = () => {
     const handleClose = () => {
         setOpen(false);
     };
+    useEffect(()=>{
+        const getMessage = async () => {
+            try{
+                const data = await fetchProfile()
+                setStatus(data)
+            }catch(error){
+                setError("Failed to load profile. Please try again.")
+            }
+        }
+        getMessage()
+    }, [])
     
 
     return (
     <>
         {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+        
         {!error && (
-        <>
+        <>{status?.is_superuser ? <>
             <Stack direction="row" spacing={2}>
             <Avatar  sx={{ width: 25, height: 25 }}>
                 <Icon path={mdiAccountTie} size={1} title={"Super user"}  />
@@ -191,6 +202,7 @@ const Eliminated = () => {
                     </Grid2>
                 </Grid2>
             </Item>
+            </>: <Alert severity="warning"><AlertTitle>Warning</AlertTitle>You are not allowed to view the user information.</Alert>}
         </>)}
     </>)
 }

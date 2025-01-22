@@ -73,8 +73,8 @@ const UpdateAnyUser = () => {
             try{
                 const data = await fetchDetail(id)
                 setFormData(data)
-            }catch(error){
-                setError("Failed to load profile. Please try again.")
+            }catch(error: any){
+                setError(error?.response?.data?.error)
             }
         }
         getMessage()
@@ -82,6 +82,8 @@ const UpdateAnyUser = () => {
 
     return (
         <>
+            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+            {!error && <> 
             <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"User"}  />
@@ -166,7 +168,8 @@ const UpdateAnyUser = () => {
                 </form>
             </Grid2>
             </Grid2>
-            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+            </>}
+            
         </>
     )
 }

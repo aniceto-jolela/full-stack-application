@@ -34,8 +34,6 @@ const Login: React.FC = () => {
             setErrorUsername({username:"", password:""})
             setCredentials({username:"", password:""})
         }catch(err: any){
-            console.log("Have =>", err.response.data)
-            
             setErrorUsername({username:"", password:""})
           if (err.response?.data?.error){
             enqueueSnackbar(`${err.response?.data?.error}`, { variant: 'error' });
