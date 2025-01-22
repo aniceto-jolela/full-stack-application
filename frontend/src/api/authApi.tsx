@@ -10,7 +10,7 @@ type CredentialsProps = {
 
 
 export const login = async (credentials:CredentialsProps)=>{
-    try{
+   
         const response = await api.post('login/', credentials);
         const {access, refresh} = response.data.tokens;
 
@@ -20,10 +20,7 @@ export const login = async (credentials:CredentialsProps)=>{
         window.location.href='home/'
 
         return response.data;
-    }catch(error){
-        console.error("Error:", error);
-        alert(error)
-    }
+  
 }
 
 export const fetchProfile = async () =>{

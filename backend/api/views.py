@@ -39,9 +39,7 @@ def login(request):
     user = authenticate(username=data.get("username"), password=data.get("password"))
 
     if user is None:
-        return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
-    if not user.is_active:
-        return Response({"error": "Your account is inactive."}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"error": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
     if user.is_staff or user.is_superuser:        
         serializer = UserSerializer(user)
         tokens = serializer.get_tokens(user)

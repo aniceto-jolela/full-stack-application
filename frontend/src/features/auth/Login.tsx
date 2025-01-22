@@ -4,14 +4,15 @@ import { Button, Grid2, TextField } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
-import { PasswordTooltip } from "../../components/PasswordTooltip";
+import Icon from '@mdi/react';
+import { mdiAccountLock, mdiLock, mdiAccount } from '@mdi/js';
 import { ErrorUser } from "../../types/types";
 
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: '#fff',
     ...theme.typography.body2,
-    padding: theme.spacing(7),
+    padding: theme.spacing(6),
     textAlign: 'center',
     color: theme.palette.text.secondary,
     ...theme.applyStyles('dark', {
@@ -33,26 +34,25 @@ const Login: React.FC = () => {
             setErrorUsername({username:"", password:""})
             setCredentials({username:"", password:""})
         }catch(err: any){
-            enqueueSnackbar('Invalid credentials. Please try again.', { variant: 'error' });
+            console.log("Have =>", err.response.data)
+            
             setErrorUsername({username:"", password:""})
-          if (err.response?.data?.username){
-              setErrorUsername((prev)=>({...prev, username: err.response.data.username[0]}))
+          if (err.response?.data?.error){
+            enqueueSnackbar(`${err.response?.data?.error}`, { variant: 'error' });
           }
-          if(err.response?.data?.password){
-              setErrorUsername((prev)=>({...prev, password: err.response.data.password[0]}))
-          }
-          console.log("Have =>", err.response)   
-          console.log(err);
+          
         }
     }
 
     return(
         <>
-        <Grid2 container rowSpacing={2} columnSpacing={{ xs: 3, sm: 2, md: 2 }}  >
-            <Grid2  size={{ xs: 12, sm: 12, md: 12 }} >
-                Login
+        <Grid2 container rowSpacing={2} columnSpacing={{ xs: 3, sm: 2, md: 12 }} sx={{justifyContent:"center", marginTop: 7,}}>
+            <Grid2  size={{ xs: 12, sm: 8, md: 6 }} >
+            <Icon path={mdiAccountLock} size={1} style={{marginBottom: -4}} color="#884ea0" />
+                
             <form onSubmit={handleSubmit}>
-                <Item>
+                <Item sx={{paddingBottom: 11, paddingTop:10}}>
+                    <Icon path={mdiAccount} size={1} style={{marginBottom: -15, padding:3}} />
                     <TextField
                         required
                         type="text"
@@ -66,6 +66,7 @@ const Login: React.FC = () => {
                         error={errorUsername?.username ? true : false}
                     />
                     {errorUsername ? <p style={{ color: "red" }}>{errorUsername.username}</p>: <p></p>}
+                    <Icon path={mdiLock} size={1} style={{marginBottom: -15, padding:4}} />
                     <TextField
                         required
                         id="outlined-password-input"
@@ -78,9 +79,8 @@ const Login: React.FC = () => {
                         size="small"
                         error={errorUsername?.password ? true : false}
                     /><br/>
-                    <PasswordTooltip/>
                     {errorUsername ? <p style={{ color: "red" }}>{errorUsername.password}</p>:<p></p>}
-                    <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
+                    <Button type="submit" sx={{marginLeft: -16}} variant="outlined" size="small" color="secondary">Submit</Button>
                 </Item>
             </form>
             </Grid2>

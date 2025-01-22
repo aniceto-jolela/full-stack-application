@@ -70,8 +70,8 @@ const Eliminated = () => {
                 setOpen(false);
                 enqueueSnackbar('User recovered.', { variant: 'info' });
             }
-        } catch (error) {
-            enqueueSnackbar('Error recovering user.', { variant: 'error' });
+        } catch (error: any) {
+            enqueueSnackbar(`${error?.response?.data?.error}`, { variant: 'error' });
         }
     }
     const handleOpen = (id: number | undefined, username: string | undefined) => {

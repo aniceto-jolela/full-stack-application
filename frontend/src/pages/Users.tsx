@@ -105,8 +105,8 @@ const Users = () => {
                 enqueueSnackbar('User deleted.', { variant: 'info' });
             }
             
-        } catch (error) {
-            enqueueSnackbar('Error deleting user.', { variant: 'error' });
+        } catch (error: any) {
+            enqueueSnackbar(`${error?.response?.data?.error}`, { variant: 'error' });
         }
     }   
     const handleOpen = (id: number | undefined, username: string | undefined) => {
