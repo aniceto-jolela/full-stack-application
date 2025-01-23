@@ -32,7 +32,7 @@ def homeview(request):
     return Response({"message": "Home view page"})
 
 
-@api_view(["POST"])
+@api_view(["POST"]) # CSRF cookie
 @permission_classes([AllowAny])
 def login(request):
     data = request.data

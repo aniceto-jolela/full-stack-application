@@ -58,9 +58,6 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-#AUTHENTICATION_BACKENDS = [
-#   'django.contrib.auth.backends.ModelBackend',
-#]
 
 ROOT_URLCONF = "backend.urls"
 
@@ -103,11 +100,11 @@ DATABASES = {
 # Test the connection
 try:
     with psycopg.connect(
-            dbname=DATABASES["default"]["NAME"],
-            user=DATABASES["default"]["USER"],
-            password=DATABASES["default"]["PASSWORD"],
-            host=DATABASES["default"]["HOST"],
-            port=DATABASES["default"]["PORT"],
+        dbname=DATABASES["default"]["NAME"],
+        user=DATABASES["default"]["USER"],
+        password=DATABASES["default"]["PASSWORD"],
+        host=DATABASES["default"]["HOST"],
+        port=DATABASES["default"]["PORT"],
     ) as conn:
         print("Database Connection!")
 except psycopg.Error as e:
