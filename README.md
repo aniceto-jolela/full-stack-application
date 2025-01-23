@@ -107,6 +107,10 @@ Task: Build a full-stack application to manage a user directory.
    ```shell
    npm install @mdi/react @mdi/js
    ```
+18. pictogrammers - Icon
+   ```shell
+   npm install @mui/x-charts
+   ```
 
 
 

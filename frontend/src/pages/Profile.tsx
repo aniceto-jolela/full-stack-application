@@ -122,87 +122,87 @@ const Profile = () => {
                     <Icon path={mdiCardAccountDetails} size={1} title={"Detail"} style={{padding:"3px"}} spin />
                 </Typography>
             </Breadcrumbs>
-                <Grid2 container rowSpacing={2} columnSpacing={{ xs: 3, sm: 2, md: 2 }}  >
-                    <Grid2 size={{ xs: 12,  sm: 6, md: 5 }}>
-                        <Item>
-                            <Avatar sx={{ bgcolor: deepPurple[200], width: 170, height:200, }} variant="rounded"  >
-                                <Icon path={mdiAccountDetails} size={4} />
-                            </Avatar>  
-                        </Item>
-                    </Grid2>
-                    <Grid2  size={{ xs: 12,  sm: 6, md: 7 }} >
-                        <Item >
-                            <Typography  variant="subtitle1" gutterBottom>
-                                User : {formData.username}
-                            </Typography>
-                            <Typography  variant="subtitle1" gutterBottom>
-                                Email : {formData.email}
-                            </Typography>
-                            <Typography  variant="subtitle1" gutterBottom color="error">
-                                | Role |
-                            </Typography>
-                            <Typography  variant="subtitle1" gutterBottom>
-                                Is_Active : <span style={{color: formData.is_active?"green": ""}}>{formData.is_active ? "Active": "Inactive"}</span> 
-                            </Typography>
-                            <Typography  variant="subtitle1" gutterBottom>
-                                Is_Staff : <span style={{color: formData.is_staff?"green": ""}}>{formData.is_staff ? "User": "Non-user"}</span>
-                            </Typography>
-                            <Typography  variant="subtitle1" gutterBottom>
-                                Is_SuperUser : <span style={{color: formData.is_superuser?"green": ""}}>{formData.is_superuser ? "Admin": "Non-admin"}</span>
-                            </Typography>
-                        </Item>
-                    </Grid2>
-                    {"Update User"}
-                    <Grid2 size={{ xs: 12,  sm: 12, md: 12 }}>
-                    <form onSubmit={handleSubmit}>
-                        <Item>
-                            <TextField
-                                required
-                                type="text"
-                                name="username"
-                                color="secondary" 
-                                value={formData.username}
-                                onChange={handleChange}
-                                id="outlined-required"
-                                label="Username"
-                                size="small"
-                                error={errorUsername?.username ? true : false}
-                            />
-                            {errorUsername ? <p style={{ color: "red" }}>{errorUsername.username}</p>: <p></p>}
-                            <TextField
-                                type="email"
-                                name="email"
-                                color="secondary" 
-                                value={formData.email}
-                                onChange={handleChange}
-                                id="outlined-basic"
-                                label="Email"
-                                size="small"
-                            /><br/><br/>
-                            <TextField
-                                id="outlined-password-input"
-                                label="Password"
-                                type="password"
-                                name="password"
-                                color="secondary" 
-                                onChange={handleChange}
-                                autoComplete="current-password"
-                                size="small"
-                                error={errorUsername?.password ? true : false}
-                            /><br/>
-                            <PasswordTooltip/>
-                            {errorUsername ? <p style={{ color: "red" }}>{errorUsername.password}</p>:<p></p>}
-                            <FormControlLabel sx={{marginLeft: -1}}  control={<Checkbox checked={formData.is_active} required onChange={handleChange} name="is_active" color="secondary" />} label=": Is_Active" />
-                            <FormControlLabel   control={<Checkbox checked={formData.is_staff} onChange={handleChange} name="is_staff" color="secondary"/>} label=": Is_Staff" />
-                            <br/>
-                            <FormControlLabel sx={{marginLeft: -12}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
-                            <br/><br/>
-                            <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
-                        
-                        </Item>
-                        </form>
-                    </Grid2>
+            <Grid2 container rowSpacing={2} columnSpacing={{ xs: 3, sm: 2, md: 2 }}  >
+                <Grid2 size={{ xs: 12,  sm: 6, md: 5 }}>
+                    <Item>
+                        <Avatar sx={{ bgcolor: deepPurple[200], width: 170, height:200, }} variant="rounded"  >
+                            <Icon path={mdiAccountDetails} size={4} />
+                        </Avatar>  
+                    </Item>
                 </Grid2>
+                <Grid2  size={{ xs: 12,  sm: 6, md: 7 }} >
+                    <Item >
+                        <Typography  variant="subtitle1" gutterBottom>
+                            User : {formData.username}
+                        </Typography>
+                        <Typography  variant="subtitle1" gutterBottom>
+                            Email : {formData.email}
+                        </Typography>
+                        <Typography  variant="subtitle1" gutterBottom color="error">
+                            | Role |
+                        </Typography>
+                        <Typography  variant="subtitle1" gutterBottom>
+                            Is_Active : <span style={{color: formData.is_active?"green": ""}}>{formData.is_active ? "Active": "Inactive"}</span> 
+                        </Typography>
+                        <Typography  variant="subtitle1" gutterBottom>
+                            Is_Staff : <span style={{color: formData.is_staff?"green": ""}}>{formData.is_staff ? "User": "Non-user"}</span>
+                        </Typography>
+                        <Typography  variant="subtitle1" gutterBottom>
+                            Is_SuperUser : <span style={{color: formData.is_superuser?"green": ""}}>{formData.is_superuser ? "Admin": "Non-admin"}</span>
+                        </Typography>
+                    </Item>
+                </Grid2>
+                {"Update User"}
+                <Grid2 size={{ xs: 12,  sm: 12, md: 12 }}>
+                <form onSubmit={handleSubmit}>
+                    <Item>
+                        <TextField
+                            required
+                            type="text"
+                            name="username"
+                            color="secondary" 
+                            value={formData.username}
+                            onChange={handleChange}
+                            id="outlined-required"
+                            label="Username"
+                            size="small"
+                            error={errorUsername?.username ? true : false}
+                        />
+                        {errorUsername ? <p style={{ color: "red" }}>{errorUsername.username}</p>: <p></p>}
+                        <TextField
+                            type="email"
+                            name="email"
+                            color="secondary" 
+                            value={formData.email}
+                            onChange={handleChange}
+                            id="outlined-basic"
+                            label="Email"
+                            size="small"
+                        /><br/><br/>
+                        <TextField
+                            id="outlined-password-input"
+                            label="Password"
+                            type="password"
+                            name="password"
+                            color="secondary" 
+                            onChange={handleChange}
+                            autoComplete="current-password"
+                            size="small"
+                            error={errorUsername?.password ? true : false}
+                        /><br/>
+                        <PasswordTooltip/>
+                        {errorUsername ? <p style={{ color: "red" }}>{errorUsername.password}</p>:<p></p>}
+                        <FormControlLabel sx={{marginLeft: -1}}  control={<Checkbox checked={formData.is_active} required onChange={handleChange} name="is_active" color="secondary" />} label=": Is_Active" />
+                        <FormControlLabel   control={<Checkbox checked={formData.is_staff} onChange={handleChange} name="is_staff" color="secondary"/>} label=": Is_Staff" />
+                        <br/>
+                        <FormControlLabel sx={{marginLeft: -12}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
+                        <br/><br/>
+                        <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
+                    
+                    </Item>
+                    </form>
+                </Grid2>
+            </Grid2>
             {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
         </>
     )
