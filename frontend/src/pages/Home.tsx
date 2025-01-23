@@ -73,7 +73,6 @@ const Home = () => {
   }, [users])
 
   useEffect(()=>{
-
     let count_1 = 1;
     let count_2 = 1;
     let count_3 = 1;
@@ -171,7 +170,7 @@ const Home = () => {
     <Icon path={mdiApplication} size={1} style={{marginLeft:7, marginBottom:-2}} />
       Full Stack Application
     </Typography>
-    <Typography sx={{marginBottom:2}}>
+    <Typography variant='subtitle2' sx={{marginBottom:3}}>
       This application aims to manage user directory. <br/>
       It shows how an administrator can have user access control that uses this application,
       and this is very useful for any application that uses authentication.
