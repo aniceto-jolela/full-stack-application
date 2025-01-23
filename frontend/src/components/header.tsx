@@ -9,7 +9,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Container from '@mui/material/Container';
 
 const Header = () => {
     const [open, setOpen] = React.useState(false);
@@ -21,8 +20,8 @@ const Header = () => {
       const DrawerList = (
         <Box sx={{ width: 200,}} role="presentation" onClick={toggleDrawer(false)}>
           <List>
-            {['Home', 'About', 'Profile', 'Users' ,'Security', 'Login', 'Logout'].map((text, index) => {
-              const isActive = location.pathname.toLowerCase() === `/${text.toLowerCase()}`
+            {['Home', 'About', 'Profile', 'Users' ,'Security', 'Login', 'Logout'].map((text) => {
+              const isActive = location.pathname.toLowerCase() === `/${text.toLowerCase()}` || location.pathname.toLowerCase() === `/${text.toLowerCase()}/`
               return(
               <ListItem key={text} disablePadding>
                 <ListItemButton 

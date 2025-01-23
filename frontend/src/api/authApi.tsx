@@ -1,26 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import api from "./axiosConfig";
+import { CredentialsProps } from '../types/types';
+
 
 const TOKEN_KEY = 'accessToken';
 const REFRESH_KEY = 'refreshToken';
 
-type CredentialsProps = {
-    username: string, 
-    password: string
-}
-
-
-export const login = async (credentials:CredentialsProps)=>{
-   
+export const login = async (credentials:CredentialsProps, navigate: ReturnType<typeof useNavigate>)=>{
         const response = await api.post('login/', credentials);
         const {access, refresh} = response.data.tokens;
 
         localStorage.setItem(TOKEN_KEY, access);
         localStorage.setItem(REFRESH_KEY, refresh);
        
-        window.location.href='home/'
-
+        navigate('/home/');
         return response.data;
-  
 }
 
 export const fetchProfile = async () =>{

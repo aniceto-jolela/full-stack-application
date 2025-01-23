@@ -1,5 +1,8 @@
 
-
+export type CredentialsProps = {
+    username: string, 
+    password: string
+}
 export type ErrorUser = {
     username?: string,
     password?: string

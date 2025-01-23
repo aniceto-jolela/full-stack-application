@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react"
+import {Fragment, useEffect, useState} from "react"
 import { fetchDeleteUser, fetchUsers } from "../api/authApi"
 import { Link } from "react-router-dom";
 import { styled } from '@mui/material/styles';
-import { Box, Alert, AlertTitle, Grid2, Button } from "@mui/material";
+import { Alert, AlertTitle, Grid2, Button } from "@mui/material";
 import Stack from '@mui/material/Stack';
 import { deepPurple } from '@mui/material/colors';
 import Paper from '@mui/material/Paper';
@@ -160,8 +160,8 @@ const Users = () => {
                     <DialogContent>
                         <DialogContentText id="alert-dialog-description">
                             Are you sure you want to delete this user?
-                            <Typography sx={{color: "purple"}}>
-                                ({userDialog?.username})!
+                            <Typography sx={{color: "purple"}} component={"span"}>
+                                <br/>({userDialog?.username})!
                             </Typography>
                         </DialogContentText>
                     </DialogContent>
@@ -176,9 +176,9 @@ const Users = () => {
                             <List >
                                 {users.length > 0?(
                                     users.map((user)=>(
-                                    <>
+                                    <Fragment key={user.id}>
                                         {user.is_active?(<>
-                                        <ListItem alignItems="flex-start" key={user.id}>
+                                        <ListItem alignItems="flex-start" >
                                             <ListItemAvatar>
                                             <StyledBadge
                                                 overlap="circular"
@@ -191,9 +191,13 @@ const Users = () => {
                                             </StyledBadge>
                                             </ListItemAvatar>
                                             <ListItemText
-                                            primary={user.username}
-                                            secondary={
-                                            <><Box sx={{textAlign:"right"}}>
+                                            primary={
+                                                <Typography sx={{textAlign:"left"}}>
+                                                    {user.username}
+                                                </Typography>
+                                            }
+                                            sx={{textAlign:"right"}}
+                                            secondary={<>
                                                 <Typography
                                                     component="span"
                                                     variant="body2"
@@ -211,14 +215,11 @@ const Users = () => {
                                                 <IconButton color="error" aria-label="delete" onClick={()=>handleOpen(user.id, user.username)} >
                                                     <Icon path={mdiDeleteAlertOutline} title={"Delete"} size={1} style={{marginTop:-5}} />
                                                 </IconButton>
-                                                </Box>
-                                            </>
-                                            }
-                                            />
+                                            </>}/>
                                         </ListItem>
                                         <Divider variant="inset" component="li" />
                                         </>):null}
-                                    </>))
+                                    </Fragment>))
                                 ):(
                                     <Alert severity="info"><AlertTitle>Info</AlertTitle>Not found.</Alert>
                                 )}

@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import {jwtDecode} from 'jwt-decode';
 import { getAccessToken, logout } from "../api/authApi";
+import { useSnackbar } from "notistack";
 
 interface AuthRedirectPros{
     children: JSX.Element
@@ -20,7 +21,8 @@ const isTokenExpired = (token: any) => {
         const currentTime = Math.floor(Date.now() / 1000); // Get current time in seconds
         return exp < currentTime; // Compare expiration time with the current time
     } catch (error) {
-        console.error("Invalid token:", error);
+        const { enqueueSnackbar } = useSnackbar();
+        enqueueSnackbar("Invalid token.", { variant: 'error' });
         return true; 
     }
 };
@@ -30,7 +32,8 @@ const AuthRedirect: React.FC<AuthRedirectPros> = ({children})=>{
         return <Navigate to="/login" replace />
     }
     if (getAccessToken() && isTokenExpired(getAccessToken())) {
-        console.log("Access token is expired");
+        const { enqueueSnackbar } = useSnackbar();
+        enqueueSnackbar("Access token is expired.", { variant: 'warning' });
         // Optionally, trigger a token refresh or logout
         logout()
         return <Navigate to="/login" replace />

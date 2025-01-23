@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import {useEffect, useState} from "react"
+import {Fragment, useEffect, useState} from "react"
 import { styled } from '@mui/material/styles';
 import { fetchProfile, fetchRecoverUser, fetchUsers } from "../api/authApi"
 import { Alert, AlertTitle, Button, Grid2 } from "@mui/material";
@@ -144,8 +144,8 @@ const Eliminated = () => {
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
                         Are you sure you want to recover this user?
-                        <Typography sx={{color: "purple"}}>
-                            ({userDialog?.username})!
+                        <Typography sx={{color: "purple"}} component={"span"}>
+                            <br/>({userDialog?.username})!
                         </Typography>
                     </DialogContentText>
                 </DialogContent>
@@ -160,9 +160,9 @@ const Eliminated = () => {
                         <List >
                             {users.length > 0?(
                                 users.map((user)=>(
-                                <>
+                                <Fragment key={user.id}>
                                     {!user.is_active?(<>
-                                    <ListItem alignItems="flex-start" key={user.id}>
+                                    <ListItem alignItems="flex-start">
                                         <ListItemAvatar>
                                             <Avatar alt="User">
                                                 <Icon path={mdiAccountCircle} size={2} />
@@ -194,7 +194,7 @@ const Eliminated = () => {
                                     </ListItem>
                                     <Divider variant="inset" component="li" />
                                     </>):null}
-                                </>))
+                                </Fragment>))
                             ):(
                                 <Alert severity="info"><AlertTitle>Info</AlertTitle>Not found.</Alert>
                             )}

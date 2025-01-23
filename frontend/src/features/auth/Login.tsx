@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import Icon from '@mdi/react';
 import { mdiAccountLock, mdiLock, mdiAccount } from '@mdi/js';
 import { ErrorUser } from "../../types/types";
+import { useNavigate } from "react-router-dom";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -22,6 +23,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const Login: React.FC = () => {
+    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({username:"", password:""})
     const [errorUsername, setErrorUsername] = useState<ErrorUser>();
     const { enqueueSnackbar } = useSnackbar();
@@ -30,7 +32,7 @@ const Login: React.FC = () => {
         e.preventDefault();
 
         try{
-            await login(credentials)
+            await login(credentials, navigate)
             setErrorUsername({username:"", password:""})
             setCredentials({username:"", password:""})
         }catch(err: any){
