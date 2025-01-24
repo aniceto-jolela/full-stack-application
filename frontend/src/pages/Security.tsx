@@ -1,9 +1,12 @@
-import { Avatar, Grid2, Paper, Stack, styled, Typography } from "@mui/material"
-import Icon from '@mdi/react';
-import { red } from '@mui/material/colors';
-import { mdiAccountTie, mdiSecurity } from '@mdi/js';
+import { Grid2, Paper, styled, Typography } from "@mui/material"
+import { green, orange, red } from '@mui/material/colors';
+import { mdiSecurity } from '@mdi/js';
 import { Link } from "react-router-dom";
-
+import { fetchProfile } from "../api/authApi";
+import { useEffect, useState } from "react";
+import { UserProps } from "../types/types";
+import Icon from '@mdi/react';
+import { mdiAlertOctagonOutline } from '@mdi/js';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -16,9 +19,32 @@ const Item = styled(Paper)(({ theme }) => ({
       backgroundColor: '#1A2027',
     }),
   }));
+
 const Security = () => {
+    const [error, setError] = useState<string | null>(null)
+    const [formData, setFormData] = useState<UserProps>({
+            username: "",
+            email: "",
+            password: "",
+            is_active: true,
+            is_staff: false,
+            is_superuser: false
+        })
     
-    
+
+    useEffect(()=>{
+        const getMessage = async () => {
+            try{
+                const data = await fetchProfile()
+                setFormData(data)
+            }catch(error){
+                setError("Failed to load profile. Please try again.")
+            }
+        }
+        getMessage()
+    }, [])
+
+
     return(
     <>
          <Typography variant="h5" color='#fff' borderRadius={5} width={140} sx={{marginTop:2, marginBottom: 5 ,backgroundColor: "purple"}} gutterBottom>
@@ -70,10 +96,29 @@ const Security = () => {
                     </Typography>
                 </Item>
             </Grid2>
-            <Grid2 size={{ xs: 12,  sm: 12, md: 6 }} >
+            <Grid2 size={{ xs: 12,  sm: 12, md: 12 }} >
                 <Item sx={{paddingLeft:0, paddingTop:2}}>
                     <Typography variant='h6' color='info'>
-                    Validate password
+                    <Icon path={mdiAlertOctagonOutline} size={1} color={orange[500]} style={{marginBottom:-5}} spin /> Login
+                    </Typography>
+                    <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2}} component={"p"}>
+                        By default, a username and password are automatically created. <br/>
+                        This user cannot be managed or deleted by any user. <br/>
+                        Its objective is to guarantee user access to the system. <br/>
+                        Only he is capable of having full access to the system (doing complete crud). <br/>
+                        The username and password are conventional, to make the application easier to use.<br/><br/>
+                        <Typography component={"code"} color="warning">
+                            username : admin <br/>
+                            password : Admin123#
+                        </Typography> <br/>
+                    </Typography>
+                </Item>
+            </Grid2>
+            <Grid2 size={{ xs: 12,  sm: 12, md: 6 }} >
+                <Item sx={{paddingLeft:0, paddingTop:2, marginBottom:2}}>
+                    <Typography variant='h6' color='info'>
+                        Validate password <br/>
+                        (Python)
                     </Typography>
                     <Typography variant="subtitle2" sx={{textAlign: "left", paddingLeft:2, paddingTop:2}}>
                         def validate_password(self, value): <br/>
@@ -90,13 +135,14 @@ const Security = () => {
                             return value
                     </Typography>
                 </Item>
+                <Typography variant="subtitle2">If you are interested in studying or taking advantage of this project, you can clone it, it is available on <a href="https://github.com/aniceto-jolela/full-stack-application" target="_blank">github</a> [ <a href="https://github.com/aniceto-jolela/full-stack-application/tree/main/frontend" target="_blank">frontend</a> and <a href="https://github.com/aniceto-jolela/full-stack-application/tree/main/backend" target="_blank">backend</a> ]. </Typography>
             </Grid2>
             <Grid2 size={{ xs: 12,  sm: 12, md: 6 }} >
                 <Item sx={{paddingLeft:0, paddingTop:2, marginBottom:2}}>
                     <Typography variant='h6' color='info'>
                     DATABASES
                     </Typography>
-                    <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2,}} component={"p"}>
+                    <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, paddingBottom:2}} component={"p"}>
                         "default": {"{"}
                             "ENGINE": os.environ.get("ENGINE_DB"),
                             "USER": os.environ.get("USER_DB"),
@@ -107,7 +153,17 @@ const Security = () => {
                             "OPTIONS": {"{"}"pool": True{"}"}
                         {"}"}
                     </Typography>
+                    <Typography variant='h6' color="error">
+                        Redux and Context
+                    </Typography>
+                    <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, textDecorationLine: "line-through"}} component={"p"}>
+                        I didn't use Redux or Context because this project is too small 😩. <br/>
+                    </Typography>
+                    <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, color: green[400]}} component={"p"}>
+                        But for other purposes, always use Context or Redux for better application performance, these are good programming practices 👍❤️😊.
+                    </Typography>
                 </Item>
+                
                 <Link  to={"/dausers"} >Delete All users</Link>
             </Grid2>
         </Grid2>

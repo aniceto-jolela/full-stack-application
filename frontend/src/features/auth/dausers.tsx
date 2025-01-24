@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
-import { logout } from "../../api/authApi"
-import { Button, Grid2 } from "@mui/material"
+import { fetchProfile, logout } from "../../api/authApi"
+import { Alert, AlertTitle, Button, Grid2 } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
@@ -10,7 +10,9 @@ import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import { Link } from "react-router-dom";
 import Icon from '@mdi/react';
-import {  mdiHomeAccount, mdiLogout, mdiAccountTie, mdiDeleteCircleOutline, mdiAccountQuestion } from '@mdi/js';
+import {  mdiHomeAccount, mdiAccountTie, mdiDeleteCircleOutline, } from '@mdi/js';
+import { useEffect, useState } from "react";
+import { UserProps } from "../../types/types";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -28,15 +30,37 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const DaUsers: React.FC = () => {
     const navigate = useNavigate()
+    const [error, setError] = useState<string | null>(null)
+    const [formData, setFormData] = useState<UserProps>({
+        username: "",
+        email: "",
+        password: "",
+        is_active: true,
+        is_staff: false,
+        is_superuser: false
+    })
 
     const handleClick =()=>{
         logout()
         navigate("/home", {replace: true})
     }
+    useEffect(()=>{
+        const getMessage = async () => {
+            try{
+                const data = await fetchProfile()
+                setFormData(data)
+            }catch(error){
+                setError("Failed to load profile. Please try again.")
+            }
+        }
+        getMessage()
+    }, [])
 
     return(
         <>
-
+            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+            {!error && <>
+            {formData.is_superuser?<>
             <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"User"}  />
@@ -77,6 +101,8 @@ const DaUsers: React.FC = () => {
                     </Item>
                 </Grid2>
             </Grid2>
+            </>:<Alert severity="warning"><AlertTitle>Warning</AlertTitle>You do not have permission to delete all users!<br/>Please contact the admin.</Alert>}
+            </>}
         </>
     )
 }
