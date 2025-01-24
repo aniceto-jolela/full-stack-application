@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
   }));
 
 const Security = () => {
-    const [error, setError] = useState<string | null>(null)
+    //const [error, setError] = useState<string | null>(null)
     const [formData, setFormData] = useState<UserProps>({
             username: "",
             email: "",
@@ -38,7 +38,7 @@ const Security = () => {
                 const data = await fetchProfile()
                 setFormData(data)
             }catch(error){
-                setError("Failed to load profile. Please try again.")
+                //setError("Failed to load profile. Please try again.")
             }
         }
         getMessage()
@@ -105,7 +105,7 @@ const Security = () => {
                         By default, a username and password are automatically created. <br/>
                         This user cannot be managed or deleted by any user. <br/>
                         Its objective is to guarantee user access to the system. <br/>
-                        Only he is capable of having full access to the system (doing complete crud). <br/>
+                        Only he is capable of permanently deleting all users. <br/>
                         The username and password are conventional, to make the application easier to use.<br/><br/>
                         <Typography component={"code"} color="warning">
                             username : admin <br/>
@@ -163,8 +163,7 @@ const Security = () => {
                         But for other purposes, always use Context or Redux for better application performance, these are good programming practices 👍❤️😊.
                     </Typography>
                 </Item>
-                
-                <Link  to={"/dausers"} >Delete All users</Link>
+                {formData.is_superuser && <Link  to={"/dausers"} >Delete All users</Link>}
             </Grid2>
         </Grid2>
     </>

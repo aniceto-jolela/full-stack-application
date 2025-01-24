@@ -15,6 +15,7 @@ import Icon from '@mdi/react';
 import { mdiCardAccountDetails, mdiHomeAccount, mdiAccountDetails, mdiAccountTie } from '@mdi/js';
 import { useSnackbar } from 'notistack';
 import { PasswordTooltip } from "../components/PasswordTooltip";
+import { ErrorUser } from "../types/types";
 
 
 
@@ -25,10 +26,6 @@ type UserProps={
     is_active: boolean,
     is_staff?: boolean,
     is_superuser?: boolean, 
-}
-type ErrorUser = {
-    username?: string,
-    password?: string
 }
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -68,12 +65,13 @@ const Profile = () => {
         setError("");
 
         try {
+            
             await fetchUpdateUser(formData);
-            setErrorUsername({username:"", password:""})
+            setErrorUsername({username:"", password:"",})
             enqueueSnackbar('User update successfully!', { variant: 'success' });
         } catch (error: any) {
             enqueueSnackbar('Failed to update user. Please try again.', { variant: 'error' });
-            setErrorUsername({username:"", password:""})
+            setErrorUsername({username:"", password:"",})
             if (error.response?.data?.username){
                 setErrorUsername((prev)=>({...prev, username: error.response.data.username[0]}))
             }
@@ -97,6 +95,7 @@ const Profile = () => {
 
     return (
         <>
+        {!error?<>
         <Stack direction="row" spacing={2}>
                 <Avatar  sx={{ width: 25, height: 25 }}>
                     <Icon path={mdiAccountTie} size={1} title={"User"}  />
@@ -203,7 +202,7 @@ const Profile = () => {
                     </form>
                 </Grid2>
             </Grid2>
-            {error && <Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
+            </>:<Alert severity="warning"><AlertTitle>Warning</AlertTitle>{error}</Alert>}
         </>
     )
 }
