@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { fetchProfile, logout } from "../../api/authApi"
+import { fetchDeleteAllUser, fetchProfile, logout } from "../../api/authApi"
 import { Alert, AlertTitle, Button, Grid2 } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
@@ -13,6 +13,7 @@ import Icon from '@mdi/react';
 import {  mdiHomeAccount, mdiAccountTie, mdiDeleteCircleOutline, } from '@mdi/js';
 import { useEffect, useState } from "react";
 import { UserProps } from "../../types/types";
+import { enqueueSnackbar } from "notistack";
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -40,10 +41,19 @@ const DaUsers: React.FC = () => {
         is_superuser: false
     })
 
-    const handleClick =()=>{
-        logout()
-        navigate("/home", {replace: true})
+    const handleClick = async()=>{
+        try{
+            const data = await fetchDeleteAllUser();
+            enqueueSnackbar(data.alldelete, { variant: 'success' });
+            console.log(data)
+            logout()
+            navigate("/home", {replace: true})
+        }catch(error){
+            console.log(error)
+        }
+        
     }
+
     useEffect(()=>{
         const getMessage = async () => {
             try{

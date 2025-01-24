@@ -57,6 +57,11 @@ export const fetchDeleteUser = async (id: number | undefined, userData:{confirm:
     return response.data
 }
 
+export const fetchDeleteAllUser = async () =>{
+    const response = await api.delete("delete_all_users/")
+    return response.data
+}
+
 export const logout =()=>{
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(REFRESH_KEY)

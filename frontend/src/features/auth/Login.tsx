@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { login } from "../../api/authApi"
-import { Button, Grid2, TextField } from "@mui/material"
+import { Button, Grid2, TextField, Typography } from "@mui/material"
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
@@ -51,7 +51,8 @@ const Login: React.FC = () => {
             <Icon path={mdiAccountLock} size={1} style={{marginBottom: -4}} color="#884ea0" />
                 
             <form onSubmit={handleSubmit}>
-                <Item sx={{paddingBottom: 11, paddingTop:10}}>
+                <Item sx={{paddingBottom: 11, paddingTop:9}}>
+                    <Typography variant="subtitle2" sx={{marginBottom:1}}>user: admin / pw: Admin123#</Typography>
                     <Icon path={mdiAccount} size={1} style={{marginBottom: -15, padding:3}} />
                     <TextField
                         required

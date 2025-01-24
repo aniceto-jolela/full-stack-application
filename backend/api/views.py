@@ -11,25 +11,9 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import NotFound
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.db import connection
 
-
-
-@api_view(["POST"]) # CSRF cookie
-def api_home(request, *args, **kwargs):
-    """
-    DRF API View
-    """
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid(raise_exception=True):
-        print(serializer.data)
-        data = serializer.data
-        return Response(data)
-    return Response({"invalid":"not good data"}, status=400)
-
-
-@api_view(["GET"]) # CSRF cookie
-def homeview(request):
-    return Response({"message": "Home view page"})
 
 
 @api_view(["POST"]) # CSRF cookie
@@ -187,4 +171,17 @@ def logout(request):
         return Response({"error": "Unable to logout!"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+@api_view(["DELETE"])
+@authentication_classes([JWTAuthentication, SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_all_users(request):
+    if not request.user.is_superuser:
+        return Response({"error": "You do not have permission to register user."}, status=status.HTTP_403_FORBIDDEN)
+    
+    User.objects.all().delete()
+    with connection.cursor() as cursor:
+        cursor.execute("ALTER SEQUENCE auth_user_id_seq RESTART WITH 1;")
+    
+    default_user = User.objects.create_superuser(username="admin", email="admin@company.com", password="Admin123#")
+    RefreshToken.for_user(default_user)
+    return Response({"alldelete": "All users have been successfully deleted."}, status=status.HTTP_200_OK)
