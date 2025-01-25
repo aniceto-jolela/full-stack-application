@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import psycopg
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-_o-2e*(iif*ti=%w!j0u^0fmb3txfj82n5qn32vqyo%f1@7n1h"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -83,14 +84,16 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+dataPostgres = urlparse(os.getenv("DATABASE_URL"))
+
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("ENGINE_DB"),
-        "USER": os.environ.get("USER_DB"),
-        "NAME": os.environ.get("NAME_DB"),
-        "PASSWORD": os.environ.get("PASSWORD_DB"),
-        "HOST": os.environ.get("HOST"),
-        "PORT": os.environ.get("PORT_DB"),
+        "ENGINE": 'django.db.backends.postgresql',
+        "USER": dataPostgres.username,
+        "NAME": dataPostgres.path.replace('/', ''),
+        "PASSWORD": dataPostgres.password,
+        "HOST": dataPostgres.hostname,
+        "PORT": 5432,
         "OPTIONS": {
             "pool": True,
         }

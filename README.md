@@ -1,4 +1,4 @@
-# full-stack-application
+# full-stack-application 👉🏼 [site](https://full-stack-application-two.vercel.app/)
 Task: Build a full-stack application to manage a user directory.
 
 > Requirements:
@@ -117,7 +117,7 @@ Task: Build a full-stack application to manage a user directory.
 #
  > Versions
 >> python 3.12.4 <br/>
->> postgresql 14.5 <br/>
+>> postgresql 16.6 <br/>
 >> pip 24.3.1 <br/>
 >> psycopg 3.2.3 <br/>
 >> psycopg-binary 3.2.3 <br/>
@@ -133,10 +133,48 @@ Task: Build a full-stack application to manage a user directory.
 >> vite 6.0.5 <br/>
 >> pyjwt 2.10.1 <br/>
 
+#
+## Deploy - ReactJS frontend on [Vercel](https://vercel.com)
+##### Prepare Your React App
+
+Ensure Build Readiness:
+- Run `npm run build` in your React project directory to ensure the app builds correctly.
+- Fix any errors that occur during the build process.
+- Check .gitignore:
+- Ensure the `build/` directory is listed in `.gitignore` to prevent unnecessary uploads to GitHub.
+
+##### Configure Build Settings
+
+Vercel automatically detects React projects. It will:
+- Set the build command to npm run build.
+- Set the output directory to `build/`.
+
+If Vercel doesn’t auto-detect these, configure them manually:
+- Framework Preset: `React`
+- Build Command: `npm run build`
+- Output Directory: `build/`
+
+##### Deploy
+###### Click Deploy.
+ Wait for the deployment process to complete:
+- Install dependencies.
+- Build the project.
+- Deploy it to a live URL (e.g., https://your-project-name.app).
+
+## PostgreSQL database - [Neon](https://neon.tech/)
+##### Create a Database in Neon:
+
+- Inside your Neon project, create a new database.
+- Note down the database URL, which will be provided to you after creation. The URL will have the following structure:
+```shell
+   postgres://user:password@hostname:port/database_name
+```
 
 
 
- ## References
+
+
+## References
 ##### Backend
 [django](https://docs.djangoproject.com/) <br/>
 [postgresql](https://www.postgresql.org) <br/>
