@@ -52,17 +52,29 @@ const UpdateAnyUser = () => {
 
         try {
             const updateUser = await fetchUpdateAnyUser(id, formData);
-            setErrorUsername({username:"", password:""})
+            setErrorUsername({username:"", password:"", super:"", rolesuper: "", rolestaff:"", stopsuper:""})
             enqueueSnackbar(`( ${updateUser.user.username} ), update successfully!`, { variant: 'success' });
             
         } catch (error: any) {
             enqueueSnackbar('Failed to update user. Please try again.', { variant: 'error' });
-            setErrorUsername({username:"", password:""})
+            setErrorUsername({username:"", password:"", super:"", rolesuper: "", rolestaff:"", stopsuper:""})
             if (error.response?.data?.username){
                 setErrorUsername((prev)=>({...prev, username: error.response.data.username[0]}))
             }
             if(error.response?.data?.password){
                 setErrorUsername((prev)=>({...prev, password: error.response.data.password[0]}))
+            }
+            if(error.response?.data?.super){
+                setErrorUsername((prev)=>({...prev, super: error.response.data.super}))
+            }
+            if(error.response?.data?.rolesuper){
+                setErrorUsername((prev)=>({...prev, rolesuper: error.response.data.rolesuper}))
+            }
+            if(error.response?.data?.rolestaff){
+                setErrorUsername((prev)=>({...prev, rolestaff: error.response.data.rolestaff}))
+            }
+            if(error.response?.data?.stopsuper){
+                setErrorUsername((prev)=>({...prev, stopsuper: error.response.data.stopsuper}))
             }
         }
     }
@@ -162,6 +174,10 @@ const UpdateAnyUser = () => {
                         <br/>
                         <FormControlLabel sx={{marginLeft: -12}} control={<Checkbox checked={formData.is_superuser} onChange={handleChange} name="is_superuser" color="secondary" />} label=": Is_Superuser" />
                         <br/><br/>
+                        {errorUsername ? <p style={{ color: "red" }}>{errorUsername.super}</p>:<p></p>}
+                        {errorUsername ? <p style={{ color: "red" }}>{errorUsername.rolesuper}</p>:<p></p>}
+                        {errorUsername ? <p style={{ color: "orange" }}>{errorUsername.rolestaff}</p>:<p></p>}
+                        {errorUsername ? <p style={{ color: "red" }}>{errorUsername.stopsuper}</p>:<p></p>}
                         <Button type="submit" sx={{marginLeft: -19}} variant="outlined" size="small" color="secondary">Submit</Button>
                     
                     </Item>
@@ -169,7 +185,6 @@ const UpdateAnyUser = () => {
             </Grid2>
             </Grid2>
             </>}
-            
         </>
     )
 }

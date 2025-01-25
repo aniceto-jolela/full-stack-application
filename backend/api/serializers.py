@@ -47,8 +47,16 @@ class UserSerializer(serializers.ModelSerializer):
         if "is_active" in validated_data:
             instace.is_active = validated_data["is_active"]
         if "is_staff" in validated_data:
+            user_id = self.context["request"].user.id
+            user_name = self.context["request"].user.username
+            if user_id == instace.id and instace.is_staff != validated_data["is_staff"]:
+                raise serializers.ValidationError({"rolestaff": f"Dear {user_name}, if you are not satisfied with your role! please contact your superior."})
             instace.is_staff = validated_data["is_staff"]
         if "is_superuser" in validated_data:
+            user_id = self.context["request"].user.id
+            user_name = self.context["request"].user.username
+            if user_id != 1 and instace.is_superuser != validated_data["is_superuser"]:
+                raise serializers.ValidationError({"rolesuper": f"Dear {user_name}, this behavior violates our CSP (Content Security Policies). Please contact your superior."})
             instace.is_superuser = validated_data["is_superuser"]
         instace.save()
         return instace

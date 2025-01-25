@@ -101,10 +101,14 @@ const Users = () => {
                 await fetchDeleteUser(id, userData)
                 setOpen(false);
                 enqueueSnackbar('User deleted.', { variant: 'info' });
-            }
-            
+            } 
         } catch (error: any) {
-            enqueueSnackbar(`${error?.response?.data?.error}`, { variant: 'error' });
+            if(error?.response?.data?.error)
+                enqueueSnackbar(`${error?.response?.data?.error}`, { variant: 'error' });
+            if(error?.response?.data?.super)
+                enqueueSnackbar(`${error?.response?.data?.super}`, { variant: 'error' });
+            if(error?.response?.data?.stopsuper)
+                enqueueSnackbar(`${error?.response?.data?.stopsuper}`, { variant: 'error' });
         }
     }   
     const handleOpen = (id: number | undefined, username: string | undefined) => {

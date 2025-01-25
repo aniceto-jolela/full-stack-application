@@ -86,8 +86,11 @@ def update_user(request):
     """
     Update the authenticated user's information.
     """
+    if request.user.id == 1:
+        return Response({"stopsuper": f"To protect the application, unfortunately you cannot change the standardized data. Thank you for your understanding dear {request.user.username}."}, status=status.HTTP_403_FORBIDDEN)
+    
     user = request.user
-    serializer = UserSerializer(user, data=request.data, partial=True) 
+    serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request}) 
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
@@ -102,16 +105,21 @@ def update_any_user(request, user_id):
     Update a user's information by user ID.
     Only an admin or the user themselves can update their information.
     """
-    if not request.user.is_superuser:
-        return Response({"error": "You do not have permission to update user."}, status=status.HTTP_403_FORBIDDEN)
+    
     try:
         user = User.objects.get(pk=user_id)
+
+        if not request.user.is_superuser:
+            return Response({"error": "You do not have permission to update user."}, status=status.HTTP_403_FORBIDDEN)
+        if user_id == 1 and request.user.id != 1:
+            return Response({"super": "You do not have permission to change your superior's data."}, status=status.HTTP_403_FORBIDDEN)
+        if user_id == 1:
+            return Response({"stopsuper": f"To protect the application, unfortunately you cannot change the standardized data. Thank you for your understanding dear {request.user.username}."}, status=status.HTTP_403_FORBIDDEN)
+
     except User.DoesNotExist:
         raise NotFound("User not found.")
-    if request.user != user and not  request.user.is_superuser:
-        return Response({"error": "You do not have permission to update this user."}, status=status.HTTP_403_FORBIDDEN)
-    
-    serializer = UserSerializer(user, data=request.data, partial=True)
+  
+    serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request})
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
@@ -124,6 +132,13 @@ def update_any_user(request, user_id):
 def delete_user(request, user_id):
     if not request.user.is_superuser:
         return Response({"error": "You do not have permission to delete this user."}, status=status.HTTP_403_FORBIDDEN)
+    if user_id == 1 and request.user.id != 1:
+        return Response({"super": "you are not allowed to delete your superior."}, status=status.HTTP_403_FORBIDDEN)
+    if user_id == 1:
+        return Response({"stopsuper": f"To protect the application, unfortunately you cannot delete your account. Thank you for your understanding dear {request.user.username}."}, status=status.HTTP_403_FORBIDDEN)
+    if request.user.id == user_id:
+        return Response({"error": "Unfortunately you are not allowed to delete your account."}, status=status.HTTP_403_FORBIDDEN)
+
     confirm = request.data.get("confirm")
     if confirm != "delete":
         return Response({"error": "Please confirm account deletion by sending {'confirm': 'delete', 'is_active':false, 'is_staff':false, 'is_superuser':false}."}, status=status.HTTP_400_BAD_REQUEST)
@@ -132,7 +147,7 @@ def delete_user(request, user_id):
     except User.DoesNotExist:
         raise NotFound("User not found.")
     
-    serializer = UserSerializer(user, data=request.data, partial=True)
+    serializer = UserSerializer(user, data=request.data, partial=True, context={"request": request})
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User deleted successfully."}, status=status.HTTP_200_OK)
@@ -175,8 +190,8 @@ def logout(request):
 @authentication_classes([JWTAuthentication, SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def delete_all_users(request):
-    if not request.user.is_superuser:
-        return Response({"error": "You do not have permission to register user."}, status=status.HTTP_403_FORBIDDEN)
+    if not request.user.is_superuser or request.user.id != 1:
+        return Response({"error": "you do not have permission to delete all users."}, status=status.HTTP_403_FORBIDDEN)
     
     User.objects.all().delete()
     with connection.cursor() as cursor:

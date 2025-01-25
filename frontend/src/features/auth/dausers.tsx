@@ -48,10 +48,10 @@ const DaUsers: React.FC = () => {
             console.log(data)
             logout()
             navigate("/home", {replace: true})
-        }catch(error){
+        }catch(error: any){
             console.log(error)
+            enqueueSnackbar(`Sr. ${formData.username}, ${error.response.data.error}`, { variant: 'error' });
         }
-        
     }
 
     useEffect(()=>{

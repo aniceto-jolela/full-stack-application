@@ -5,7 +5,11 @@ export type CredentialsProps = {
 }
 export type ErrorUser = {
     username?: string,
-    password?: string
+    password?: string,
+    super?: string,
+    rolesuper?: string,
+    rolestaff?: string,
+    stopsuper?: string,
 }
 
 export type RouteParams = {

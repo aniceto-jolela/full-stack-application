@@ -104,7 +104,7 @@ const Security = () => {
                     <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2}} component={"p"}>
                         By default, a username and password are automatically created. <br/>
                         This user cannot be managed or deleted by any user. <br/>
-                        Its objective is to guarantee user access to the system. <br/>
+                        Its objective is to make the crud complete and guarantee access to the system. <br/>
                         Only he is capable of permanently deleting all users. <br/>
                         The username and password are conventional, to make the application easier to use.<br/><br/>
                         <Typography component={"code"} color="warning">
