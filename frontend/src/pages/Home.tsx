@@ -192,6 +192,8 @@ const Home = () => {
               .psycopg[pool] {">"} Connection pools <br/>
               .Psycopg {">"} Database adapter <br/>
               .PostgreSQL {">"} Database <br/>
+              .neon {">"} Database hosting <br/>
+              .fly {">"} Django hosting <br/>
               .django-cors-headers {">"} [Cross-Origin Resource Sharing (CORS)]<br/>
            </Typography>
         </Item>
@@ -201,7 +203,7 @@ const Home = () => {
           <Typography variant='h6' color='primary'>
             Frontend
           </Typography>
-           <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, marginBottom:2}} component={"p"}>
+           <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, marginBottom:4}} component={"p"}>
               .Vite + React (variant TypeScript) <br/>
               .Material UI <br/>
               .pictogrammers {">"} Icon <br/>

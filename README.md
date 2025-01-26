@@ -169,7 +169,7 @@ If Vercel doesn’t auto-detect these, configure them manually:
 ```shell
    postgres://user:password@hostname:port/database_name
 ```
-## Fly.oi
+## Deploy - Django on [Fly.oi](https://fly.io/)
 ##### Install flyctl 
 flyctl is a command-line utility that lets you work with Fly.io using fly commands.
 ```shell
@@ -183,9 +183,17 @@ pip freeze > requirements.txt
 ```shell
 flyctl launch
 ```
+>
+>   ```shell
+>      flyctl deploy
+>  ```
+>
+or
+>  ```shell
+>  flyctl deploy --wait-timeout 170s
+>  ```
 
-
-
+#
 
 ## References
 ##### Backend
@@ -196,6 +204,7 @@ flyctl launch
 [drf-simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/) <br/>
 [python](https://docs.python.org) <br/>
 [neon](https://neon.tech/) <br/>
+[fly](https://fly.io/) <br/>
 Before with nvm (Many versions) [nodejs](https://nodejs.org) <br/>
 Now (A version) [nodejs](https://github.com/nodesource/distributions) <br/>
 
