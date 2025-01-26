@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-import psycopg
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 load_dotenv()
@@ -25,12 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-_o-2e*(iif*ti=%w!j0u^0fmb3txfj82n5qn32vqyo%f1@7n1h"
+SECRET_KEY = os.getenv("SECRET_KEY_DJ")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["full-stack-application.fly.dev"]
 
 
 # Application definition
@@ -89,29 +88,14 @@ dataPostgres = urlparse(os.getenv("DATABASE_URL"))
 DATABASES = {
     "default": {
         "ENGINE": 'django.db.backends.postgresql',
-        "USER": dataPostgres.username,
-        "NAME": dataPostgres.path.replace('/', ''),
-        "PASSWORD": dataPostgres.password,
-        "HOST": dataPostgres.hostname,
-        "PORT": 5432,
-        "OPTIONS": {
-            "pool": True,
-        }
+        "USER": os.getenv('PGUSER'),
+        "NAME": os.getenv('PGDATABASE'),
+        "PASSWORD": os.getenv('PGPASSWORD'),
+        "HOST": os.getenv('PGHOST'),
+        "PORT": os.getenv('PGPORT'),
     }
 }
 
-# Test the connection
-try:
-    with psycopg.connect(
-        dbname=DATABASES["default"]["NAME"],
-        user=DATABASES["default"]["USER"],
-        password=DATABASES["default"]["PASSWORD"],
-        host=DATABASES["default"]["HOST"],
-        port=DATABASES["default"]["PORT"],
-    ) as conn:
-        print("Database Connection!")
-except psycopg.Error as e:
-    print(f"Connection error: {e}")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
@@ -154,8 +138,22 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React's development server
+    "https://full-stack-application-two.vercel.app",  # React - vercel
 ]
+
+# Configure Security Settings - Fly
+SECURE_SSL_REDIRECT = False  # Redirect HTTP to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # Force HTTPS (set it to 1 year)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include subdomains
+SECURE_HSTS_PRELOAD = True  # Allow preloading in HTTP headers
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True # custom header to enforce cookies over HTTPS
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+CSRF_TRUSTED_ORIGINS = ["https://full-stack-application.fly.dev"]
+
+# End fly
 
 CORS_ALLOW_CREDENTIALS = True #To allow cookies or authentication headers:
 

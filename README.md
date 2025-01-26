@@ -169,7 +169,20 @@ If Vercel doesn’t auto-detect these, configure them manually:
 ```shell
    postgres://user:password@hostname:port/database_name
 ```
+## Fly.oi
+##### Install flyctl 
+flyctl is a command-line utility that lets you work with Fly.io using fly commands.
+```shell
+curl -L https://fly.io/install.sh | sh
+```
 
+```shell
+pip freeze > requirements.txt
+```
+
+```shell
+flyctl launch
+```
 
 
 
@@ -182,6 +195,7 @@ If Vercel doesn’t auto-detect these, configure them manually:
 [drf](https://www.django-rest-framework.org/) <br/>
 [drf-simplejwt](https://django-rest-framework-simplejwt.readthedocs.io/) <br/>
 [python](https://docs.python.org) <br/>
+[neon](https://neon.tech/) <br/>
 Before with nvm (Many versions) [nodejs](https://nodejs.org) <br/>
 Now (A version) [nodejs](https://github.com/nodesource/distributions) <br/>
 
@@ -189,6 +203,7 @@ Now (A version) [nodejs](https://github.com/nodesource/distributions) <br/>
 [react](https://react.dev/) <br/>
 [vite](https://vite.dev/) <br/>
 [mui](https://mui.com/) <br/>
+[vercel](https://vercel.com) <br/>
 
 
 

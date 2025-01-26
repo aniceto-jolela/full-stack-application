@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken, getRefreshToken, logout } from "./authApi";
 
 const api = axios.create({
-    baseURL: "http://localhost:8000/auth-api/",
+    baseURL: "https://full-stack-application.fly.dev/auth-api/",
     withCredentials: true // Allows cookies/headers
 })
 // Add access token to headers
