@@ -176,7 +176,7 @@ const Users = () => {
                 </Dialog>
                 <Item>
                     <Grid2 container rowSpacing={2} columnSpacing={{ xs: 1, sm: 8, md: 8 }} >
-                        <Grid2  size={12} >
+                        <Grid2  size={{ xs: 12,  sm: 12, md: 12 }} >
                             <List >
                                 {users.length > 0?(
                                     users.map((user)=>(

@@ -75,7 +75,7 @@ const Security = () => {
                         I used it to restrict access on the frontend side <br/><br/>
                         <Typography component={"code"} color="warning">.Token </Typography><br/>
                         I used it to restrict the backend (API) side.<br/>
-                        <Typography variant="subtitle2" component={"code"} color="error">The token time is 20 minutes, it should be 5 minutes, but as I'm not using the refresh token, I had to increase the minutes for the user to have a good experience.</Typography>
+                        <Typography variant="subtitle2" component={"code"} color="error">The token time is 5 minutes, for better API security. I'm not using the refresh token, because I didn't think it was necessary.</Typography>
                     </Typography>
                 </Item>
             </Grid2>

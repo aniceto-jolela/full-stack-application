@@ -192,8 +192,6 @@ const Home = () => {
               .psycopg[pool] {">"} Connection pools <br/>
               .Psycopg {">"} Database adapter <br/>
               .PostgreSQL {">"} Database <br/>
-              .neon {">"} Database hosting <br/>
-              .fly {">"} Django hosting <br/>
               .django-cors-headers {">"} [Cross-Origin Resource Sharing (CORS)]<br/>
            </Typography>
         </Item>
@@ -203,7 +201,7 @@ const Home = () => {
           <Typography variant='h6' color='primary'>
             Frontend
           </Typography>
-           <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, marginBottom:4}} component={"p"}>
+           <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, marginBottom:2}} component={"p"}>
               .Vite + React (variant TypeScript) <br/>
               .Material UI <br/>
               .pictogrammers {">"} Icon <br/>
@@ -214,6 +212,18 @@ const Home = () => {
           <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2}} component={"p"}>
             Similar project made in Django: <br/>
             <a href="https://django-crud-dh2q.onrender.com/" target="_blank">crud</a>
+           </Typography>
+        </Item>
+      </Grid2>
+      <Grid2  size={{ xs: 12,  sm: 12, md: 12 }} >
+        <Item sx={{paddingLeft:0,  paddingTop:2}}>
+          <Typography variant='h6' color='primary'>
+            Deploy
+          </Typography>
+           <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2,}} component={"p"}>
+              .neon {">"} Database hosting <br/>
+              .fly {">"} Django hosting <br/>
+              .vercel {">"} React hosting <br/>
            </Typography>
         </Item>
       </Grid2>

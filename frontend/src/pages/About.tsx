@@ -98,6 +98,28 @@ const About = () => {
                 </Typography>
             </Item>
             </Grid2>
+            <Grid2  size={{ xs: 12,  sm: 6, md: 6 }} >
+            <Item sx={{paddingLeft:0,  paddingTop:2}}>
+                <Typography variant='h6' color='primary'>
+                Fly.io
+                </Typography>
+                <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, marginBottom:2}} component={"p"}>
+                The most flexible and powerful compute platform on any public cloud. <a href="https://fly.io/" target="_blank">Fly</a> Machines are hardware-virtualized containers, running on our own hardware, that launch instantly and run exactly as long as you want them to — for a single HTTP request, or for weeks of uptime. 
+                
+                </Typography>
+            </Item>
+            </Grid2>
+            <Grid2  size={{ xs: 12,  sm: 6, md: 6 }} >
+            <Item sx={{paddingLeft:0,  paddingTop:2, paddingBottom:10}}>
+                <Typography variant='h6' color='primary'>
+                Neon
+                </Typography>
+                <Typography variant='subtitle2' sx={{textAlign: "left", paddingLeft:2, paddingTop:2, marginBottom:2}} component={"p"}>
+                <a href="https://neon.tech/home" target="_blank">Neon</a> offers a serverless Postgres database platform for developers. Instantly branch your data and schema to access isolated DB copies. Generous Free Tier. Scale to Zero DBs. Instant Autoscaling.
+                 
+                </Typography>
+            </Item>
+            </Grid2>
         </Grid2>
         </>
     )
